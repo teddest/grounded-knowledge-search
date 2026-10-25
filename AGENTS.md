@@ -30,7 +30,11 @@ Keep the implementation understandable to a reader learning search systems. Pref
 - Keep each branch focused on one OpenSpec task group or one closely related documentation change.
 - Before opening a PR, rebase the topic branch onto the latest `origin/main` when necessary. Resolve conflicts on the topic branch and use `git push --force-with-lease` only for that topic branch after a rebase.
 - Never force-push, reset, or rewrite `main`.
-- Do not merge locally. Open a GitHub pull request and use the repository merge policy in `CONTRIBUTING.md`.
+- Do not merge locally. Open a GitHub pull request for review and use the merge policy below.
+- Require at least one approval and passing verification before merging.
+- Use **Squash and merge** for completed branches so each task group becomes one focused commit on `main`.
+- Do not use merge commits for ordinary task branches.
+- Delete the remote topic branch after a successful merge.
 
 ## OpenSpec workflow
 
