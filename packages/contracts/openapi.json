@@ -197,6 +197,47 @@
         }
       }
     },
+    "/api/v1/ask": {
+      "post": {
+        "tags": [
+          "grounded-answers"
+        ],
+        "summary": "Ask",
+        "operationId": "ask_api_v1_ask_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroundedAnswer"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -244,6 +285,37 @@
   },
   "components": {
     "schemas": {
+      "AskRequest": {
+        "properties": {
+          "document_set_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Document Set Id"
+          },
+          "question": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Question"
+          },
+          "limit": {
+            "type": "integer",
+            "maximum": 20.0,
+            "minimum": 1.0,
+            "title": "Limit",
+            "default": 8
+          },
+          "filters": {
+            "$ref": "#/components/schemas/SearchFilters"
+          }
+        },
+        "type": "object",
+        "required": [
+          "document_set_id",
+          "question"
+        ],
+        "title": "AskRequest"
+      },
       "DocumentSetCreate": {
         "properties": {
           "name": {
@@ -323,6 +395,27 @@
           "sections_embedded"
         ],
         "title": "EmbeddingResponse"
+      },
+      "GroundedAnswer": {
+        "properties": {
+          "answer": {
+            "type": "string",
+            "title": "Answer"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/SearchResult"
+            },
+            "type": "array",
+            "title": "Sources"
+          }
+        },
+        "type": "object",
+        "required": [
+          "answer",
+          "sources"
+        ],
+        "title": "GroundedAnswer"
       },
       "HTTPValidationError": {
         "properties": {

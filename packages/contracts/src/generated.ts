@@ -73,6 +73,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/ask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ask */
+        post: operations["ask_api_v1_ask_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -111,6 +128,22 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AskRequest */
+        AskRequest: {
+            /**
+             * Document Set Id
+             * Format: uuid
+             */
+            document_set_id: string;
+            /** Question */
+            question: string;
+            /**
+             * Limit
+             * @default 8
+             */
+            limit: number;
+            filters?: components["schemas"]["SearchFilters"];
+        };
         /** DocumentSetCreate */
         DocumentSetCreate: {
             /** Name */
@@ -148,6 +181,13 @@ export interface components {
             sections_seen: number;
             /** Sections Embedded */
             sections_embedded: number;
+        };
+        /** GroundedAnswer */
+        GroundedAnswer: {
+            /** Answer */
+            answer: string;
+            /** Sources */
+            sources: components["schemas"]["SearchResult"][];
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -392,6 +432,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SearchResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ask_api_v1_ask_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AskRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GroundedAnswer"];
                 };
             };
             /** @description Validation Error */

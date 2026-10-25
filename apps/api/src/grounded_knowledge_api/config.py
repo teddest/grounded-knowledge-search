@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     embedding_dimensions: int = 1536
     embedding_batch_size: int = 64
     retrieval_candidate_multiplier: int = 3
+    answer_max_context_characters: int = 24000
+    answer_max_tokens: int = 1200
     openrouter_site_url: str = "http://localhost:3000"
     openrouter_app_name: str = "grounded-knowledge-search"
     api_cors_origins: list[str] = ["http://localhost:3000"]
