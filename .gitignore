@@ -9,3 +9,5 @@ node_modules/
 .next/
 coverage/
 *.pyc
+.coverage
+*.tsbuildinfo
