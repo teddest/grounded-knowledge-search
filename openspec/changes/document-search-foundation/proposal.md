@@ -19,6 +19,7 @@ The repository should be understandable and runnable by someone starting with no
 - Add educational documentation explaining the ingestion, retrieval, answer-generation, and evaluation flow.
 - Add a Next.js and TypeScript web interface styled with Tailwind CSS for interactive search and cited answers.
 - Add language-appropriate testing, linting, type-checking, integration testing, and coverage gates targeting near-complete coverage of first-party application logic.
+- Use pnpm for the Node.js workspace and a locked Python dependency workflow, with supply-chain safeguards for dependency installation, updates, and build scripts.
 
 ## Capabilities
 
@@ -32,6 +33,7 @@ The repository should be understandable and runnable by someone starting with no
 - `local-development`: Provides a reproducible local setup and documentation for running the system with Docker and OpenRouter configuration.
 - `web-interface`: Provides the Next.js/Tailwind user interface for ingestion status, search, filters, results, and cited answers.
 - `quality-engineering`: Provides testing conventions, dependency seams, coverage reporting, and automated quality gates across the Python API and TypeScript web application.
+- `supply-chain-security`: Provides locked and auditable Python/Node dependencies, reviewed package-manager scripts, vulnerability checks, and safe update practices.
 
 ### Modified Capabilities
 
@@ -42,6 +44,7 @@ The repository should be understandable and runnable by someone starting with no
 - Adds the initial Python API, Next.js web application, persistence, and user-facing documentation for the repository.
 - Adds PostgreSQL with the pgvector extension as the local retrieval store.
 - Adds a TypeScript/Tailwind frontend toolchain and a Python/TypeScript automated testing toolchain.
+- Adds pnpm workspace configuration, locked Python dependencies, package-manager policy, and dependency security checks.
 - Adds an OpenRouter integration for embedding and chat model requests; model names and credentials remain configurable.
 - Adds Docker-based local infrastructure and environment configuration.
 - Introduces APIs or commands for document ingestion, search, grounded questions, and evaluation.

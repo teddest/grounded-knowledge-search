@@ -19,6 +19,7 @@ The initial corpus consists of Markdown documents with YAML front matter and hea
 - Use strong typing, explicit dependency boundaries, and automated quality gates in both application layers.
 - Target 100% coverage for first-party deterministic application logic where practical, with end-to-end tests covering the primary user workflow.
 - Keep the code in a monorepo with one documented development command and hot reload for local UI work.
+- Make dependency installation reproducible and reduce the risk of malicious or compromised packages and lifecycle scripts.
 
 **Non-Goals:**
 
@@ -37,7 +38,7 @@ Use FastAPI for the HTTP API and a separate Next.js application written in TypeS
 
 The frontend will use the App Router, `src/` organization, server components by default, and client components only where interactivity requires them. The development container will bind-mount the web source and run the Next.js development server so edits trigger hot reload without rebuilding the image. The API will use its equivalent reload mode for backend changes.
 
-The implementation will verify current stable framework guidance and commit lockfiles rather than assuming package versions. The Node.js LTS and package-manager versions will be pinned for the monorepo and used consistently in local development and Docker. The frontend will use Tailwind CSS through the current official Next.js integration, with shared design tokens and reusable components instead of scattered ad hoc styles.
+The implementation will verify current stable framework guidance and commit lockfiles rather than assuming package versions. The Node.js LTS and pnpm versions will be pinned for the monorepo and used consistently in local development and Docker. Python dependencies will use a locked resolver workflow such as `uv` with a committed lockfile, subject to verification during runtime-foundation implementation. The frontend will use Tailwind CSS through the current official Next.js integration, with shared design tokens and reusable components instead of scattered ad hoc styles.
 
 **Alternatives considered:** Serving static HTML from FastAPI would reduce setup but would not provide the requested Next.js/Tailwind learning surface. A single full-stack Next.js implementation would duplicate or replace the Python search service and make the retrieval architecture less explicit. A separate frontend repository would make local setup and coordinated changes harder.
 
@@ -97,6 +98,14 @@ Provide a single executable script, `scripts/dev.sh`, that starts the database, 
 
 **Alternatives considered:** Asking users to start three terminals is error-prone. Rebuilding the web image after every edit defeats hot reload. Running the database directly on the host makes the setup less reproducible.
 
+### 11. Apply package supply-chain controls
+
+Use pnpm workspaces with a committed `pnpm-lock.yaml` for Node dependencies and a committed lockfile for the selected Python package manager. CI and Docker installs will use frozen/locked modes and a pinned registry configuration. Dependency updates must be intentional, reviewable, and accompanied by vulnerability and license checks where the tools support them.
+
+Package lifecycle scripts will be disabled by default or explicitly allowlisted after review. Direct URL, Git, unpinned, or locally shadowed dependencies are not allowed without a documented reason and review. The project will run package-manager audits, Python dependency audits, and lockfile integrity checks in the quality workflow. Secrets and package credentials must never be stored in repository configuration.
+
+**Alternatives considered:** Unlocked installs are convenient but make builds non-reproducible and increase exposure to dependency substitution or compromised releases. Relying only on a one-time audit does not protect future installs, so controls must also cover lockfiles, scripts, registries, and updates.
+
 ## Risks / Trade-offs
 
 - **[External model availability]** → Embedding and chat models may differ by OpenRouter account or change over time. Keep both model names configurable, fail with actionable errors, and document the required embedding dimension.
@@ -111,6 +120,7 @@ Provide a single executable script, `scripts/dev.sh`, that starts the database, 
 - **[Framework churn]** → Next.js and Tailwind integration details change over time. Verify official setup documentation at implementation time and commit lockfiles and tested configuration.
 - **[Container file watching]** → Bind-mounted file events can behave differently across operating systems. Use the documented polling fallback only when needed, keep the reload command observable, and verify edits inside the web container.
 - **[Monorepo coupling]** → Shared contracts can create unnecessary coordination between API and web changes. Keep the contracts package narrow, generate or validate it from the API schema, and version behavior changes through OpenSpec.
+- **[Dependency supply-chain compromise]** → A registry package, transitive dependency, install script, or update may be malicious or compromised. Use frozen lockfiles, pinned registries, reviewed updates, restricted lifecycle scripts, audit tools, and minimal dependency permissions; do not treat any one control as sufficient.
 
 ## Migration Plan
 

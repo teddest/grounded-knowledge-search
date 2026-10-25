@@ -1,9 +1,9 @@
 ## 1. Runtime foundation — `chore/runtime-foundation` (PR 1)
 
-- [ ] 1.1 Verify current official setup guidance for the supported Python version, Node.js LTS, package manager, FastAPI, Next.js App Router, TypeScript, Tailwind CSS, pytest, Vitest, and Playwright; record selected versions in lockfiles rather than relying on unverified assumptions.
+- [ ] 1.1 Verify current official setup guidance for the supported Python version, Node.js LTS, pnpm, the selected Python package manager, FastAPI, Next.js App Router, TypeScript, Tailwind CSS, pytest, Vitest, and Playwright; record selected versions in lockfiles rather than relying on unverified assumptions.
 - [ ] 1.2 Create the monorepo application layout with `apps/api`, `apps/web`, `packages/contracts`, and `scripts`, plus root workspace configuration.
-- [ ] 1.3 Add the Python API dependency manifest, formatting/linting/type-checking configuration, and test commands.
-- [ ] 1.4 Add the Next.js App Router TypeScript project using `src/`, ESLint, Tailwind CSS through the current official integration, and frontend test commands.
+- [ ] 1.3 Add the Python API dependency manifest and locked resolver workflow, formatting/linting/type-checking configuration, and test commands.
+- [ ] 1.4 Add the Next.js App Router TypeScript project using `src/`, pnpm workspace configuration, ESLint, Tailwind CSS through the current official integration, and frontend test commands.
 - [ ] 1.5 Add environment configuration for the database, document directory, OpenRouter key, embedding model, chat model, embedding dimensions, and API base URL.
 - [ ] 1.6 Add Docker Compose development services for the API, Next.js web application, and PostgreSQL with the pgvector extension, using bind mounts and named dependency volumes for reload-friendly development.
 - [ ] 1.7 Add the initial database schema for repositories/documents, sections, metadata, and indexing state.
@@ -11,9 +11,10 @@
 - [ ] 1.9 Add the initial Next.js layout, accessible loading/error boundaries, and a health/configuration status surface.
 - [ ] 1.10 Add Python coverage configuration with branch coverage and the agreed near-100% gate for first-party logic.
 - [ ] 1.11 Add TypeScript coverage configuration with statement, branch, function, and line thresholds plus documented minimal exclusions.
-- [ ] 1.12 Add a safe `.env.example`, lockfiles, and verification that no credentials are committed.
-- [ ] 1.13 Add `scripts/dev.sh` as the single development entry point and verify it starts every service with one command.
-- [ ] 1.14 Document the commands for starting the services and running API, web, type, lint, build, and coverage checks, including the hot-reload workflow.
+- [ ] 1.12 Add a safe `.env.example`, `pnpm-lock.yaml`, the Python lockfile, pinned package-manager versions, and verification that no credentials are committed.
+- [ ] 1.13 Add explicit registry configuration and reviewed lifecycle/build-script policy for pnpm and the Python package manager.
+- [ ] 1.14 Add `scripts/dev.sh` as the single development entry point and verify it starts every service with one command.
+- [ ] 1.15 Document the commands for starting the services and running API, web, type, lint, build, coverage, lockfile, and dependency security checks, including the hot-reload workflow.
 
 ## 2. Document model and ingestion — `feat/document-ingestion` (PR 2)
 
@@ -90,6 +91,10 @@
 - [ ] 8.5 Add branch coverage reports and enforce 100% coverage for deterministic first-party Python and TypeScript logic, documenting any narrowly scoped exclusions.
 - [ ] 8.6 Run linting, formatting, type checking, builds, unit tests, integration tests, and browser tests in one repeatable verification command.
 - [ ] 8.7 Confirm that tests run without OpenRouter network access and that external calls are limited to explicitly marked integration checks.
+- [ ] 8.8 Add frozen-install checks for pnpm and the Python dependency workflow.
+- [ ] 8.9 Add package-manager audit and vulnerability checks for Node and Python dependencies.
+- [ ] 8.10 Add lockfile, registry, lifecycle-script, dependency-source, and secret-leak checks with documented exceptions.
+- [ ] 8.11 Verify the security workflow fails on a controlled vulnerable dependency fixture or equivalent deterministic test.
 
 ## 9. Educational documentation — `docs/educational-guide` (PR 9)
 

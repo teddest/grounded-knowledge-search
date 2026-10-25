@@ -61,7 +61,7 @@ This repository uses [OpenSpec](https://github.com/Fission-AI/OpenSpec). Install
 
 ### Node.js tooling and services
 
-- Verify and pin the supported Node.js LTS version and package-manager version; commit the lockfile and use the same package manager locally and in Docker.
+- Use pnpm for the Node.js workspace. Verify and pin the supported Node.js LTS and pnpm versions; commit the lockfile and use the same toolchain locally and in Docker.
 - Use `package.json` scripts as the canonical interface for development, linting, type checking, testing, coverage, and builds.
 - Prefer ESM modules, explicit imports, and small modules with one responsibility; avoid putting application logic in ad hoc build or shell scripts.
 - Validate environment variables at process startup and keep configuration separate from business logic.
@@ -85,6 +85,15 @@ This repository uses [OpenSpec](https://github.com/Fission-AI/OpenSpec). Install
 - Keep Docker images and base dependencies pinned or lockfile-controlled, expose health checks, and avoid putting secrets in images or layers.
 - Shell scripts must use `set -Eeuo pipefail`, quote variables, validate required tools/configuration, and be safe to rerun.
 - Prefer documented, testable commands over manual multi-terminal setup.
+
+### Package supply-chain security
+
+- Commit and enforce `pnpm-lock.yaml` and the Python dependency lockfile; use frozen/locked installs in Docker and automated checks.
+- Use explicit, reviewed package registries. Do not add unpinned Git, arbitrary URL, local-path, or shadowed dependencies without documenting the reason and review.
+- Disable package lifecycle/build scripts by default where possible; explicitly allowlist only the scripts required by reviewed dependencies.
+- Run available Node and Python dependency vulnerability/audit checks, and review lockfile diffs for every dependency update.
+- Keep dependency versions, package-manager versions, and registry configuration reproducible; do not rely on a developer's global setup.
+- Never commit package-manager tokens, registry credentials, API keys, or generated files containing secrets.
 
 ### Cross-cutting design patterns
 
