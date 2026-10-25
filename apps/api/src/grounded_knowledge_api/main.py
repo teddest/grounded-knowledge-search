@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .config import Settings, get_settings
 from .database import database_checker
 from .routes.answers import router as answers_router
+from .routes.evaluation import router as evaluation_router
 from .routes.ingestion import router as ingestion_router
 from .routes.search import router as search_router
 
@@ -27,6 +28,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.include_router(ingestion_router)
     application.include_router(search_router)
     application.include_router(answers_router)
+    application.include_router(evaluation_router)
     application.add_middleware(
         CORSMiddleware,
         allow_origins=application_settings.api_cors_origins,

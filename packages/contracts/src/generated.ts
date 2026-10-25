@@ -90,6 +90,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/evaluate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Evaluate */
+        post: operations["evaluate_api_v1_evaluate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -181,6 +198,79 @@ export interface components {
             sections_seen: number;
             /** Sections Embedded */
             sections_embedded: number;
+        };
+        /** EvaluationCase */
+        EvaluationCase: {
+            /** Id */
+            id: string;
+            /** Query */
+            query: string;
+            /** Use Case */
+            use_case?: string | null;
+            /** Relevant Sources */
+            relevant_sources: string[];
+            /** Expected Answer */
+            expected_answer?: string | null;
+            filters?: components["schemas"]["SearchFilters"];
+        };
+        /** EvaluationCaseResult */
+        EvaluationCaseResult: {
+            /** Id */
+            id: string;
+            /** Query */
+            query: string;
+            /** Hit At K */
+            hit_at_k: number;
+            /** Precision At K */
+            precision_at_k: number;
+            /** Recall At K */
+            recall_at_k: number;
+            /** Reciprocal Rank */
+            reciprocal_rank: number;
+            /** Expected Sources */
+            expected_sources: string[];
+            /** Matched Sources */
+            matched_sources: string[];
+            /** Returned Sources */
+            returned_sources: string[];
+            /** Results */
+            results: components["schemas"]["SearchResult"][];
+        };
+        /** EvaluationMetrics */
+        EvaluationMetrics: {
+            /** Hit At K */
+            hit_at_k: number;
+            /** Precision At K */
+            precision_at_k: number;
+            /** Recall At K */
+            recall_at_k: number;
+            /** Mrr */
+            mrr: number;
+        };
+        /** EvaluationReport */
+        EvaluationReport: {
+            /** K */
+            k: number;
+            /** Query Count */
+            query_count: number;
+            metrics: components["schemas"]["EvaluationMetrics"];
+            /** Cases */
+            cases: components["schemas"]["EvaluationCaseResult"][];
+        };
+        /** EvaluationRequest */
+        EvaluationRequest: {
+            /**
+             * Document Set Id
+             * Format: uuid
+             */
+            document_set_id: string;
+            /** Cases */
+            cases: components["schemas"]["EvaluationCase"][];
+            /**
+             * K
+             * @default 5
+             */
+            k: number;
         };
         /** GroundedAnswer */
         GroundedAnswer: {
@@ -465,6 +555,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GroundedAnswer"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    evaluate_api_v1_evaluate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EvaluationRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluationReport"];
                 };
             };
             /** @description Validation Error */

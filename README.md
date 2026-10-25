@@ -96,6 +96,26 @@ curl -X POST http://localhost:8000/api/v1/ask \
 
 The answer response includes the generated answer and the exact source records supplied as evidence. If no supporting sections are found, the API returns an explicit no-evidence response instead of asking the model to guess.
 
+Run a labeled retrieval evaluation through the same hybrid search path:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/evaluate \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "document_set_id":"DOCUMENT_SET_ID",
+    "k":5,
+    "cases":[
+      {
+        "id":"refund-current",
+        "query":"What is the annual refund window?",
+        "relevant_sources":["refunds-2025.md"]
+      }
+    ]
+  }'
+```
+
+The evaluation response reports Hit@K, Precision@K, Recall@K, MRR, returned sources, matched sources, and per-query failure details. Retrieval quality is reported separately from generated-answer and citation quality. The checked-in baseline summary is in `evaluation-baseline.json`; it is a reproducible educational baseline, not a production quality claim.
+
 ## Dataset
 
 **Northstar Relay** is the example dataset. It covers billing, onboarding, product behavior, support escalation, security, and incident response.
