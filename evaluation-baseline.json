@@ -1,0 +1,18 @@
+{
+  "retrieval": "hybrid vector + lexical reciprocal-rank fusion",
+  "embedding_model": "openai/text-embedding-3-small",
+  "k": 5,
+  "query_count": 22,
+  "metrics": {
+    "hit_at_k": 0.9545454545,
+    "precision_at_k": 0.4272727273,
+    "recall_at_k": 0.8257575758,
+    "mrr": 0.7727272727
+  },
+  "interpretation": "This is a reproducible baseline for the checked-in synthetic corpus and evaluation questions, not a production quality claim.",
+  "limitations": [
+    "Source matching is path-based and does not prove semantic answer correctness.",
+    "Citation correctness and generated-answer groundedness require separate human review.",
+    "Results depend on the configured embedding model, indexed corpus, and retrieval settings."
+  ]
+}

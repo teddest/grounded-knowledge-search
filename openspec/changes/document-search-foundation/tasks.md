@@ -62,14 +62,14 @@
 
 ## 6. Retrieval evaluation — `feat/retrieval-evaluation` (PR 6)
 
-- [ ] 6.1 Define the evaluation input schema for queries, use cases, expected sources, and optional expected answer summaries.
-- [ ] 6.2 Implement source matching that distinguishes expected current and historical documents.
-- [ ] 6.3 Implement Hit@K, Precision@K, Recall@K, and reciprocal-rank calculations.
-- [ ] 6.4 Produce aggregate and per-query output containing expected sources, returned sources, and failure details.
-- [ ] 6.5 Add a command or endpoint that evaluates the checked-in question set through the normal retrieval path.
-- [ ] 6.6 Add unit tests for metric calculations, no-hit cases, multi-source recall, and version mismatch.
-- [ ] 6.7 Document citation correctness and answer groundedness as separate human-review dimensions.
-- [ ] 6.8 Run and record a baseline evaluation without presenting unmeasured performance claims.
+- [x] 6.1 Define the evaluation input schema for queries, use cases, expected sources, and optional expected answer summaries.
+- [x] 6.2 Implement source matching that distinguishes expected current and historical documents.
+- [x] 6.3 Implement Hit@K, Precision@K, Recall@K, and reciprocal-rank calculations.
+- [x] 6.4 Produce aggregate and per-query output containing expected sources, returned sources, and failure details.
+- [x] 6.5 Add a command or endpoint that evaluates the checked-in question set through the normal retrieval path.
+- [x] 6.6 Add unit tests for metric calculations, no-hit cases, multi-source recall, and version mismatch.
+- [x] 6.7 Document citation correctness and answer groundedness as separate human-review dimensions.
+- [x] 6.8 Run and record a baseline evaluation without presenting unmeasured performance claims.
 
 ## 7. Next.js learning interface — `feat/search-interface` (PR 7)
 

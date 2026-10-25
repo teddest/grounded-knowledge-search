@@ -238,6 +238,47 @@
         }
       }
     },
+    "/api/v1/evaluate": {
+      "post": {
+        "tags": [
+          "retrieval-evaluation"
+        ],
+        "summary": "Evaluate",
+        "operationId": "evaluate_api_v1_evaluate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationReport"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -395,6 +436,217 @@
           "sections_embedded"
         ],
         "title": "EmbeddingResponse"
+      },
+      "EvaluationCase": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Query"
+          },
+          "use_case": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Use Case"
+          },
+          "relevant_sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Relevant Sources"
+          },
+          "expected_answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Answer"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/SearchFilters"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "query",
+          "relevant_sources"
+        ],
+        "title": "EvaluationCase"
+      },
+      "EvaluationCaseResult": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "query": {
+            "type": "string",
+            "title": "Query"
+          },
+          "hit_at_k": {
+            "type": "integer",
+            "title": "Hit At K"
+          },
+          "precision_at_k": {
+            "type": "number",
+            "title": "Precision At K"
+          },
+          "recall_at_k": {
+            "type": "number",
+            "title": "Recall At K"
+          },
+          "reciprocal_rank": {
+            "type": "number",
+            "title": "Reciprocal Rank"
+          },
+          "expected_sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Expected Sources"
+          },
+          "matched_sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Matched Sources"
+          },
+          "returned_sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Returned Sources"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/SearchResult"
+            },
+            "type": "array",
+            "title": "Results"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "query",
+          "hit_at_k",
+          "precision_at_k",
+          "recall_at_k",
+          "reciprocal_rank",
+          "expected_sources",
+          "matched_sources",
+          "returned_sources",
+          "results"
+        ],
+        "title": "EvaluationCaseResult"
+      },
+      "EvaluationMetrics": {
+        "properties": {
+          "hit_at_k": {
+            "type": "number",
+            "title": "Hit At K"
+          },
+          "precision_at_k": {
+            "type": "number",
+            "title": "Precision At K"
+          },
+          "recall_at_k": {
+            "type": "number",
+            "title": "Recall At K"
+          },
+          "mrr": {
+            "type": "number",
+            "title": "Mrr"
+          }
+        },
+        "type": "object",
+        "required": [
+          "hit_at_k",
+          "precision_at_k",
+          "recall_at_k",
+          "mrr"
+        ],
+        "title": "EvaluationMetrics"
+      },
+      "EvaluationReport": {
+        "properties": {
+          "k": {
+            "type": "integer",
+            "title": "K"
+          },
+          "query_count": {
+            "type": "integer",
+            "title": "Query Count"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/EvaluationMetrics"
+          },
+          "cases": {
+            "items": {
+              "$ref": "#/components/schemas/EvaluationCaseResult"
+            },
+            "type": "array",
+            "title": "Cases"
+          }
+        },
+        "type": "object",
+        "required": [
+          "k",
+          "query_count",
+          "metrics",
+          "cases"
+        ],
+        "title": "EvaluationReport"
+      },
+      "EvaluationRequest": {
+        "properties": {
+          "document_set_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Document Set Id"
+          },
+          "cases": {
+            "items": {
+              "$ref": "#/components/schemas/EvaluationCase"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Cases"
+          },
+          "k": {
+            "type": "integer",
+            "maximum": 50.0,
+            "minimum": 1.0,
+            "title": "K",
+            "default": 5
+          }
+        },
+        "type": "object",
+        "required": [
+          "document_set_id",
+          "cases"
+        ],
+        "title": "EvaluationRequest"
       },
       "GroundedAnswer": {
         "properties": {
