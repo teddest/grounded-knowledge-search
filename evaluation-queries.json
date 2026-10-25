@@ -1,0 +1,156 @@
+[
+  {
+    "id": "q01",
+    "query": "Can an annual customer receive a refund after 30 days?",
+    "use_case": "current policy lookup",
+    "relevant_sources": ["policies/refunds-2025.md"],
+    "expected_answer": "The standard annual-subscription refund window is 30 calendar days from the original purchase; requests after that require an exception review."
+  },
+  {
+    "id": "q02",
+    "query": "What was the refund window under the 2024 policy?",
+    "use_case": "historical lookup",
+    "relevant_sources": ["policies/refunds-2024.md"],
+    "expected_answer": "The 2024 policy used a 14-calendar-day window for monthly and annual subscriptions."
+  },
+  {
+    "id": "q03",
+    "query": "What changed between the 2024 and 2025 refund policies?",
+    "use_case": "version comparison",
+    "relevant_sources": ["policies/refunds-2024.md", "policies/refunds-2025.md"],
+    "expected_answer": "The annual-subscription window changed from 14 to 30 calendar days, while the monthly window remained 14 days; the 2025 policy also clarifies renewal and required request fields."
+  },
+  {
+    "id": "q04",
+    "query": "Does cancelling a subscription automatically issue a refund?",
+    "use_case": "policy relationship",
+    "relevant_sources": ["policies/cancellation-policy.md", "support/faq-billing.md", "policies/refunds-2025.md"],
+    "expected_answer": "No. Cancellation and refund requests are separate, and refund eligibility is determined under the current refund policy."
+  },
+  {
+    "id": "q05",
+    "query": "What happens after a recurring payment fails?",
+    "use_case": "procedure lookup",
+    "relevant_sources": ["procedures/failed-payment-procedure.md"],
+    "expected_answer": "Relay retries after 24 and 72 hours, then provides a seven-day grace period before the workspace becomes read-only if all retries fail."
+  },
+  {
+    "id": "q06",
+    "query": "When should Support escalate a payment issue immediately?",
+    "use_case": "routing lookup",
+    "relevant_sources": ["procedures/failed-payment-procedure.md", "procedures/support-escalation.md"],
+    "expected_answer": "Immediate escalation is required for unauthorized or duplicate charges, suspected compromise, or a payment that succeeded externally but remains failed in Relay."
+  },
+  {
+    "id": "q07",
+    "query": "Who can start a workspace export?",
+    "use_case": "permission lookup",
+    "relevant_sources": ["product/export-and-roles.md", "product/roles-and-permissions.md", "support/faq-product.md"],
+    "expected_answer": "The Workspace Owner and Workspace Administrator can start an export; Members and Viewers cannot."
+  },
+  {
+    "id": "q08",
+    "query": "How long does an export link remain available?",
+    "use_case": "product fact lookup",
+    "relevant_sources": ["product/export-and-roles.md"],
+    "expected_answer": "An export link expires after 72 hours."
+  },
+  {
+    "id": "q09",
+    "query": "What should I do if an export fails twice?",
+    "use_case": "support procedure",
+    "relevant_sources": ["product/export-and-roles.md", "support/faq-product.md", "procedures/support-escalation.md"],
+    "expected_answer": "Retry once; if it fails again, contact Support with the export job ID, workspace ID, and approximate start time."
+  },
+  {
+    "id": "q10",
+    "query": "How long is a cancelled workspace retained before deletion?",
+    "use_case": "retention lookup",
+    "relevant_sources": ["policies/data-retention.md", "support/faq-product.md"],
+    "expected_answer": "It remains read-only for 30 days before scheduled deletion; encrypted backups may retain records for up to 35 additional days."
+  },
+  {
+    "id": "q11",
+    "query": "Can a customer request a legal hold to stop deletion?",
+    "use_case": "exception routing",
+    "relevant_sources": ["policies/data-retention.md", "policies/exception-handling.md"],
+    "expected_answer": "A legal hold can pause scheduled deletion, but the request must be escalated to Security and Privacy; Support cannot place the hold."
+  },
+  {
+    "id": "q12",
+    "query": "What information must be included in a support escalation?",
+    "use_case": "procedure lookup",
+    "relevant_sources": ["procedures/support-escalation.md"],
+    "expected_answer": "Include the workspace ID, customer impact, reproduction steps, timestamps, relevant request or invoice IDs, and the response already given."
+  },
+  {
+    "id": "q13",
+    "query": "When should a suspected data exposure be treated as an incident?",
+    "use_case": "security procedure",
+    "relevant_sources": ["operations/incident-response.md", "procedures/support-escalation.md"],
+    "expected_answer": "Suspected exposure of customer data should be escalated immediately to Security and Privacy and handled under incident response."
+  },
+  {
+    "id": "q14",
+    "query": "What is the process for onboarding a new customer?",
+    "use_case": "multi-section procedure",
+    "relevant_sources": ["procedures/customer-onboarding.md"],
+    "expected_answer": "Confirm customer and implementation details, hold kickoff, validate a sample import, complete readiness review, and hand off to Support."
+  },
+  {
+    "id": "q15",
+    "query": "What happens if a workspace exceeds the API request limit?",
+    "use_case": "product fact lookup",
+    "relevant_sources": ["product/usage-limits.md", "support/faq-product.md"],
+    "expected_answer": "The client receives a rate-limit response and should retry with exponential backoff; the limit depends on the workspace plan."
+  },
+  {
+    "id": "q16",
+    "query": "Can a support agent export customer data directly?",
+    "use_case": "permission and privacy lookup",
+    "relevant_sources": ["product/export-and-roles.md", "product/roles-and-permissions.md"],
+    "expected_answer": "Not by default. The customer must grant temporary administrator access through the approved support process."
+  },
+  {
+    "id": "q17",
+    "query": "Who approves a refund exception?",
+    "use_case": "routing lookup",
+    "relevant_sources": ["policies/refunds-2025.md", "policies/exception-handling.md"],
+    "expected_answer": "Finance Operations reviews billing exceptions; Support may collect facts and submit the request but cannot approve it."
+  },
+  {
+    "id": "q18",
+    "query": "What should Support say before an exception has been approved?",
+    "use_case": "communication policy",
+    "relevant_sources": ["policies/exception-handling.md", "support/faq-billing.md"],
+    "expected_answer": "Support should say the request has been submitted for review and must not promise approval."
+  },
+  {
+    "id": "q19",
+    "query": "Which document should be trusted when two policy documents conflict?",
+    "use_case": "source authority",
+    "relevant_sources": ["operations/knowledge-management.md", "policies/refunds-2025.md"],
+    "expected_answer": "Use the current document for present-day questions, check effective dates, and report unresolved conflicts instead of silently choosing a rule."
+  },
+  {
+    "id": "q20",
+    "query": "What information should never be included in a billing ticket?",
+    "use_case": "safety lookup",
+    "relevant_sources": ["procedures/failed-payment-procedure.md", "procedures/support-escalation.md"],
+    "expected_answer": "Do not include full payment-card numbers or secrets; use safe identifiers such as invoice ID and card last four digits where appropriate."
+  },
+  {
+    "id": "q21",
+    "query": "What is the current annual subscription refund period?",
+    "use_case": "version-sensitive lookup",
+    "relevant_sources": ["policies/refunds-2025.md"],
+    "expected_answer": "The current policy allows 30 calendar days from the original purchase for an annual subscription."
+  },
+  {
+    "id": "q22",
+    "query": "What should happen when a customer asks for deletion for regulatory reasons?",
+    "use_case": "security routing",
+    "relevant_sources": ["policies/data-retention.md", "procedures/support-escalation.md"],
+    "expected_answer": "Escalate the request to Security and Privacy; Support should not independently determine the regulatory deletion outcome."
+  }
+]
