@@ -2,6 +2,10 @@
 
 Grounded Knowledge Search uses a pull-request-only workflow. `main` is the protected integration branch and must always remain in a runnable, reviewable state.
 
+## Required tooling
+
+This repository uses [OpenSpec](https://github.com/Fission-AI/OpenSpec) for proposals, designs, specifications, and implementation tasks. Install OpenSpec before starting work that changes the planned behavior or task checklist.
+
 ## Branching strategy
 
 ### 1. Synchronize the base branch

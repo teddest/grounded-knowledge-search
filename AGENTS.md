@@ -34,6 +34,8 @@ Keep the implementation understandable to a reader learning search systems. Pref
 
 ## OpenSpec workflow
 
+This repository uses [OpenSpec](https://github.com/Fission-AI/OpenSpec). Install or otherwise make the OpenSpec CLI available before working with the proposal, specs, or task checklist.
+
 - Read the applicable proposal, design, specs, and tasks before implementation.
 - Use one branch and pull request per task group whenever practical.
 - Update the OpenSpec task checklist as work is completed.
