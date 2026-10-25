@@ -1,8 +1,8 @@
 ## 1. Runtime foundation — `chore/runtime-foundation` (PR 1)
 
-- [ ] 1.1 Verify current official setup guidance for the supported Python version, Node.js LTS, pnpm, the selected Python package manager, FastAPI, Next.js App Router, TypeScript, Tailwind CSS, pytest, Vitest, and Playwright; record selected versions in lockfiles rather than relying on unverified assumptions.
+- [ ] 1.1 Verify current official setup guidance for the supported Python version, Node.js LTS, pnpm, uv, FastAPI, Next.js App Router, TypeScript, Tailwind CSS, pytest, Vitest, and Playwright; record selected versions in lockfiles rather than relying on unverified assumptions.
 - [ ] 1.2 Create the monorepo application layout with `apps/api`, `apps/web`, `packages/contracts`, and `scripts`, plus root workspace configuration.
-- [ ] 1.3 Add the Python API dependency manifest and locked resolver workflow, formatting/linting/type-checking configuration, and test commands.
+- [ ] 1.3 Add the Python API dependency manifest and uv locked resolver workflow, formatting/linting/type-checking configuration, and test commands.
 - [ ] 1.4 Add the Next.js App Router TypeScript project using `src/`, pnpm workspace configuration, ESLint, Tailwind CSS through the current official integration, and frontend test commands.
 - [ ] 1.5 Add environment configuration for the database, document directory, OpenRouter key, embedding model, chat model, embedding dimensions, and API base URL.
 - [ ] 1.6 Add Docker Compose development services for the API, Next.js web application, and PostgreSQL with the pgvector extension, using bind mounts and named dependency volumes for reload-friendly development.

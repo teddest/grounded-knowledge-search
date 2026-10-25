@@ -50,7 +50,7 @@ This repository uses [OpenSpec](https://github.com/Fission-AI/OpenSpec). Install
 
 ### Python API
 
-- Keep production Python configuration in `pyproject.toml` and verify the supported Python version before selecting dependencies.
+- Use `uv` for Python dependency resolution and keep production Python configuration in `pyproject.toml`; verify the supported Python version before selecting dependencies.
 - Use type hints for public functions and strict static checking where practical; avoid `Any` and untyped boundary data.
 - Keep HTTP/Pydantic schemas, domain logic, persistence, and provider adapters in separate modules.
 - Use FastAPI dependency injection for database sessions and external providers rather than constructing clients inside route handlers.
@@ -88,7 +88,7 @@ This repository uses [OpenSpec](https://github.com/Fission-AI/OpenSpec). Install
 
 ### Package supply-chain security
 
-- Commit and enforce `pnpm-lock.yaml` and the Python dependency lockfile; use frozen/locked installs in Docker and automated checks.
+- Commit and enforce `pnpm-lock.yaml` and `uv.lock`; use frozen/locked installs in Docker and automated checks.
 - Use explicit, reviewed package registries. Do not add unpinned Git, arbitrary URL, local-path, or shadowed dependencies without documenting the reason and review.
 - Disable package lifecycle/build scripts by default where possible; explicitly allowlist only the scripts required by reviewed dependencies.
 - Run available Node and Python dependency vulnerability/audit checks, and review lockfile diffs for every dependency update.
