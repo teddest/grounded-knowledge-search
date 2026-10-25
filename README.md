@@ -1,6 +1,6 @@
-# Northstar Relay Knowledge Base
+# Grounded Knowledge Search
 
-This is a fictional policy and procedure corpus for the document-search POC.
+This repository contains an educational document-search application and a fictional policy and procedure corpus. **Northstar Relay Knowledge Base** is the name of the fictional data set, not the application.
 
 ## Organization
 
