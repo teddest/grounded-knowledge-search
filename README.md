@@ -6,6 +6,10 @@ This repository contains an educational document-search application and a fictio
 
 **Northstar Relay** is the example dataset. It covers billing, onboarding, product behavior, support escalation, security, and incident response.
 
+## Project planning
+
+The implementation is planned with [OpenSpec](https://github.com/Fission-AI/OpenSpec). The proposal, design, requirements, and PR-sized task plan are in `openspec/changes/document-search-foundation/`.
+
 ## Document conventions
 
 Each document begins with YAML front matter containing metadata that a search system can index:
