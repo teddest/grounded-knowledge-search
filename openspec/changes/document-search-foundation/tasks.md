@@ -19,14 +19,14 @@
 
 ## 2. Document model and ingestion — `feat/document-ingestion` (PR 2)
 
-- [ ] 2.1 Define the document and section domain models used by both ingestion and retrieval.
-- [ ] 2.2 Implement YAML front-matter parsing for the checked-in corpus metadata.
-- [ ] 2.3 Implement Markdown heading-aware section extraction with source line ranges.
-- [ ] 2.4 Implement plain-text section extraction with bounded section sizes.
-- [ ] 2.5 Implement supported-file discovery and skipping for unsupported, generated, and dependency directories.
-- [ ] 2.6 Add idempotent persistence that replaces a source document's prior sections on re-ingestion.
-- [ ] 2.7 Add ingestion status and error reporting for malformed metadata and unsupported inputs.
-- [ ] 2.8 Add unit tests for metadata parsing, section boundaries, skipped files, and repeated ingestion.
+- [x] 2.1 Define the document and section domain models used by both ingestion and retrieval.
+- [x] 2.2 Implement YAML front-matter parsing for the checked-in corpus metadata.
+- [x] 2.3 Implement Markdown heading-aware section extraction with source line ranges.
+- [x] 2.4 Implement plain-text section extraction with bounded section sizes.
+- [x] 2.5 Implement supported-file discovery and skipping for unsupported, generated, and dependency directories.
+- [x] 2.6 Add idempotent persistence that replaces a source document's prior sections on re-ingestion.
+- [x] 2.7 Add ingestion status and error reporting for malformed metadata and unsupported inputs.
+- [x] 2.8 Add unit tests for metadata parsing, section boundaries, skipped files, and repeated ingestion.
 
 ## 3. OpenRouter embeddings and indexing — `feat/embedding-indexing` (PR 3)
 
