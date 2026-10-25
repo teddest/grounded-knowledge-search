@@ -1,10 +1,10 @@
 # Grounded Knowledge Search
 
-This repository contains an educational document-search application and a fictional policy and procedure corpus for Northstar Relay, a SaaS workflow platform.
+This repository contains an educational document-search application and a fictional policy and procedure corpus.
 
-## Organization
+## Dataset
 
-Northstar Labs operates **Relay**, a workflow platform used by customer support and operations teams. The documents cover billing, onboarding, product behavior, support escalation, security, and incident response.
+**Northstar Relay** is the example dataset. It covers billing, onboarding, product behavior, support escalation, security, and incident response.
 
 ## Document conventions
 
