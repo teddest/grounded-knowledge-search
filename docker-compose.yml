@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: search
       POSTGRES_PASSWORD: search
     ports:
-      - "${POSTGRES_PORT:-5433}:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d:ro
@@ -25,9 +25,9 @@ services:
     environment:
       DATABASE_URL: postgresql://search:search@db:5432/search
       REPOSITORY_ROOT: /workspace/repository
-      API_CORS_ORIGINS: '["http://localhost:${WEB_PORT:-3001}"]'
+      API_CORS_ORIGINS: '["http://localhost:${WEB_PORT:-3000}"]'
     ports:
-      - "${API_PORT:-8001}:8000"
+      - "${API_PORT:-8000}:8000"
     volumes:
       - ./apps/api:/workspace/apps/api
       - .:/workspace/repository:ro
@@ -43,10 +43,10 @@ services:
     env_file:
       - .env
     environment:
-      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8001}
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
       WATCHPACK_POLLING: "true"
     ports:
-      - "${WEB_PORT:-3001}:3000"
+      - "${WEB_PORT:-3000}:3000"
     volumes:
       - ./apps/web:/workspace/apps/web
       - ./packages:/workspace/packages

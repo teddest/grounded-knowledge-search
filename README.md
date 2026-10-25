@@ -18,9 +18,9 @@ Start the database, API, and Next.js web application with one command:
 
 The script creates `.env` from `.env.example` when needed. The default local endpoints are:
 
-- Web application: <http://localhost:3001>
-- API health check: <http://localhost:8001/health>
-- PostgreSQL: `localhost:5433`
+- Web application: <http://localhost:3000>
+- API health check: <http://localhost:8000/health>
+- PostgreSQL: `localhost:5432`
 
 The development containers bind-mount application source and use reload-friendly file watching. Add an `OPENROUTER_API_KEY` to `.env` when embedding or chat requests are implemented.
 
