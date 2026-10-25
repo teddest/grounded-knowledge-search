@@ -52,13 +52,13 @@
 
 ## 5. Grounded answers — `feat/grounded-answers` (PR 5)
 
-- [ ] 5.1 Define the bounded context format that labels each retrieved section with a stable citation number.
-- [ ] 5.2 Define the answer-generation prompt requiring evidence-only answers, citations, and explicit uncertainty.
-- [ ] 5.3 Implement the configurable OpenRouter chat adapter behind an internal interface.
-- [ ] 5.4 Implement the answer endpoint by reusing hybrid search and returning both the answer and source records.
-- [ ] 5.5 Add handling for no evidence, missing chat credentials, provider failure, and oversized context.
-- [ ] 5.6 Add tests using a mocked chat provider for citation formatting, insufficient evidence, and current-versus-archived metadata.
-- [ ] 5.7 Manually verify answers for the refund, failed-payment, export, and data-retention questions.
+- [x] 5.1 Define the bounded context format that labels each retrieved section with a stable citation number.
+- [x] 5.2 Define the answer-generation prompt requiring evidence-only answers, citations, and explicit uncertainty.
+- [x] 5.3 Implement the configurable OpenRouter chat adapter behind an internal interface.
+- [x] 5.4 Implement the answer endpoint by reusing hybrid search and returning both the answer and source records.
+- [x] 5.5 Add handling for no evidence, missing chat credentials, provider failure, and oversized context.
+- [x] 5.6 Add tests using a mocked chat provider for citation formatting, insufficient evidence, and current-versus-archived metadata.
+- [x] 5.7 Manually verify answers for the refund, failed-payment, export, and data-retention questions.
 
 ## 6. Retrieval evaluation — `feat/retrieval-evaluation` (PR 6)
 

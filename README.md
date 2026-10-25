@@ -81,6 +81,21 @@ curl -X POST http://localhost:8000/api/v1/search \
 
 Results include source metadata, excerpts, component ranks, similarity/lexical scores, and the reciprocal-rank fusion score.
 
+Generate a grounded answer with citations from the retrieved sections:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/ask \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "document_set_id":"DOCUMENT_SET_ID",
+    "question":"What is the annual refund window?",
+    "limit":5,
+    "filters":{"status":"current"}
+  }'
+```
+
+The answer response includes the generated answer and the exact source records supplied as evidence. If no supporting sections are found, the API returns an explicit no-evidence response instead of asking the model to guess.
+
 ## Dataset
 
 **Northstar Relay** is the example dataset. It covers billing, onboarding, product behavior, support escalation, security, and incident response.
