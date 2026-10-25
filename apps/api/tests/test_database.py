@@ -137,6 +137,28 @@ def test_index_run_lifecycle(monkeypatch):
         store.fail_index_run(run_id, "failure")
 
 
+def test_retrieval_queries_apply_filters(monkeypatch):
+    store = database.DatabaseDocumentStore("postgresql://example")
+    row = {"id": 1, "source_path": "policy.md", "content": "refund"}
+    vector_connection = FakeConnection([Result(many=[row])])
+    monkeypatch.setattr(database, "connection", lambda _url: patched_connection(vector_connection))
+
+    assert store.vector_search(
+        uuid4(), [0.1, 0.2], 5, category="billing", status="current", version="2025.1"
+    ) == [row]
+    assert "s.embedding <=>" in vector_connection.calls[0][0]
+
+    lexical_connection = FakeConnection([Result(many=[row])])
+    monkeypatch.setattr(database, "connection", lambda _url: patched_connection(lexical_connection))
+    assert store.lexical_search(uuid4(), "refund", 5, category="billing") == [row]
+    assert "to_tsquery" in lexical_connection.calls[0][0]
+    assert store.lexical_search(uuid4(), "!!!", 5) == []
+
+    filters, params = store._document_filter_sql(uuid4(), None, None, None)
+    assert filters == "d.document_set_id = %s"
+    assert len(params) == 1
+
+
 def test_embedding_section_queries_and_updates(monkeypatch):
     store = database.DatabaseDocumentStore("postgresql://example")
     row = {"id": 1, "content": "text", "source_path": "one.md"}

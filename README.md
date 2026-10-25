@@ -66,6 +66,21 @@ curl -X POST \
 
 The indexing endpoint batches embedding requests and skips sections already indexed with the configured embedding model. The ingestion workflow preserves front-matter metadata, headings, source paths, line ranges, content hashes, and searchable sections. Repeating ingestion replaces the existing records for that source instead of creating duplicates.
 
+Search the indexed document set with hybrid vector and lexical retrieval:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/search \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "document_set_id":"DOCUMENT_SET_ID",
+    "query":"What is the annual refund window?",
+    "limit":5,
+    "filters":{"status":"current"}
+  }'
+```
+
+Results include source metadata, excerpts, component ranks, similarity/lexical scores, and the reciprocal-rank fusion score.
+
 ## Dataset
 
 **Northstar Relay** is the example dataset. It covers billing, onboarding, product behavior, support escalation, security, and incident response.

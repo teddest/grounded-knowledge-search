@@ -41,14 +41,14 @@
 
 ## 4. Hybrid retrieval — `feat/hybrid-retrieval` (PR 4)
 
-- [ ] 4.1 Add PostgreSQL lexical indexes or query support for section text, titles, headings, and distinctive terms.
-- [ ] 4.2 Implement vector candidate retrieval with configurable top-k behavior.
-- [ ] 4.3 Implement lexical and exact-term candidate retrieval with repository/category/status/version filters.
-- [ ] 4.4 Implement reciprocal-rank fusion with duplicate section removal and component-rank diagnostics.
-- [ ] 4.5 Define the search response containing ranked text, source metadata, location, and retrieval diagnostics.
-- [ ] 4.6 Add the search API endpoint with validation for query, repository, filters, and result limit.
-- [ ] 4.7 Add tests for paraphrased queries, exact version terms, metadata filters, no-result queries, and stable ranking output.
-- [ ] 4.8 Compare vector-only, lexical-only, and hybrid behavior against a small set of manually inspected queries.
+- [x] 4.1 Add PostgreSQL lexical indexes or query support for section text, titles, headings, and distinctive terms.
+- [x] 4.2 Implement vector candidate retrieval with configurable top-k behavior.
+- [x] 4.3 Implement lexical and exact-term candidate retrieval with repository/category/status/version filters.
+- [x] 4.4 Implement reciprocal-rank fusion with duplicate section removal and component-rank diagnostics.
+- [x] 4.5 Define the search response containing ranked text, source metadata, location, and retrieval diagnostics.
+- [x] 4.6 Add the search API endpoint with validation for query, repository, filters, and result limit.
+- [x] 4.7 Add tests for paraphrased queries, exact version terms, metadata filters, no-result queries, and stable ranking output.
+- [x] 4.8 Compare vector-only, lexical-only, and hybrid behavior against a small set of manually inspected queries.
 
 ## 5. Grounded answers — `feat/grounded-answers` (PR 5)
 

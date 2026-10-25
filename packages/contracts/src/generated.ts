@@ -39,6 +39,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/document-sets/{document_set_id}/index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Index Embeddings */
+        post: operations["index_embeddings_api_v1_document_sets__document_set_id__index_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Search */
+        post: operations["search_api_v1_search_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -101,6 +135,20 @@ export interface components {
             /** Status */
             status: string;
         };
+        /** EmbeddingResponse */
+        EmbeddingResponse: {
+            /**
+             * Document Set Id
+             * Format: uuid
+             */
+            document_set_id: string;
+            /** Status */
+            status: string;
+            /** Sections Seen */
+            sections_seen: number;
+            /** Sections Embedded */
+            sections_embedded: number;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -119,6 +167,73 @@ export interface components {
             documents_seen: number;
             /** Sections Seen */
             sections_seen: number;
+        };
+        /** SearchFilters */
+        SearchFilters: {
+            /** Category */
+            category?: string | null;
+            /** Status */
+            status?: string | null;
+            /** Version */
+            version?: string | null;
+        };
+        /** SearchRequest */
+        SearchRequest: {
+            /**
+             * Document Set Id
+             * Format: uuid
+             */
+            document_set_id: string;
+            /** Query */
+            query: string;
+            /**
+             * Limit
+             * @default 10
+             */
+            limit: number;
+            filters?: components["schemas"]["SearchFilters"];
+        };
+        /** SearchResponse */
+        SearchResponse: {
+            /** Query */
+            query: string;
+            /** Results */
+            results: components["schemas"]["SearchResult"][];
+        };
+        /** SearchResult */
+        SearchResult: {
+            /** Id */
+            id: number;
+            /** Source Path */
+            source_path: string;
+            /** Title */
+            title: string;
+            /** Category */
+            category?: string | null;
+            /** Status */
+            status?: string | null;
+            /** Version */
+            version?: string | null;
+            /** Effective Date */
+            effective_date?: string | null;
+            /** Heading Path */
+            heading_path?: string[];
+            /** Start Line */
+            start_line?: number | null;
+            /** End Line */
+            end_line?: number | null;
+            /** Content */
+            content: string;
+            /** Similarity */
+            similarity?: number | null;
+            /** Lexical Score */
+            lexical_score?: number | null;
+            /** Vector Rank */
+            vector_rank?: number | null;
+            /** Lexical Rank */
+            lexical_rank?: number | null;
+            /** Fusion Score */
+            fusion_score: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -213,6 +328,70 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IngestionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    index_embeddings_api_v1_document_sets__document_set_id__index_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_set_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmbeddingResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_api_v1_search_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SearchResponse"];
                 };
             };
             /** @description Validation Error */
