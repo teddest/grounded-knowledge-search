@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     openrouter_chat_model: str = "openai/gpt-4o-mini"
     embedding_dimensions: int = 1536
     embedding_batch_size: int = 64
+    retrieval_candidate_multiplier: int = 3
     openrouter_site_url: str = "http://localhost:3000"
     openrouter_app_name: str = "grounded-knowledge-search"
     api_cors_origins: list[str] = ["http://localhost:3000"]

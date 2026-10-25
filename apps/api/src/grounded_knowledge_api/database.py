@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from datetime import UTC, datetime
@@ -7,6 +8,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 import psycopg
+from pgvector import Vector
 from pgvector.psycopg import register_vector
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
@@ -169,6 +171,88 @@ class DatabaseDocumentStore:
                     ),
                 )
 
+    @staticmethod
+    def _document_filter_sql(
+        document_set_id: UUID,
+        category: str | None,
+        status: str | None,
+        version: str | None,
+    ) -> tuple[str, list[Any]]:
+        clauses = ["d.document_set_id = %s"]
+        params: list[Any] = [document_set_id]
+        for column, value in (("category", category), ("status", status), ("version", version)):
+            if value is not None:
+                clauses.append(f"d.{column} = %s")
+                params.append(value)
+        return " AND ".join(clauses), params
+
+    def vector_search(
+        self,
+        document_set_id: UUID,
+        embedding: list[float],
+        limit: int,
+        category: str | None = None,
+        status: str | None = None,
+        version: str | None = None,
+    ) -> list[dict[str, Any]]:
+        filters, filter_params = self._document_filter_sql(
+            document_set_id, category, status, version
+        )
+        query = f"""
+            SELECT s.id, d.source_path, d.title, d.category, d.status, d.version,
+                   d.effective_date, s.heading_path, s.start_line, s.end_line, s.content,
+                   1 - (s.embedding <=> %s) AS similarity
+            FROM sections AS s
+            JOIN documents AS d ON d.id = s.document_id
+            WHERE {filters} AND s.embedding IS NOT NULL
+            ORDER BY s.embedding <=> %s
+            LIMIT %s
+        """
+        with connection(self.database_url) as database_connection:
+            rows = database_connection.execute(
+                query, [Vector(embedding), *filter_params, Vector(embedding), limit]
+            ).fetchall()
+        return [dict(row) for row in rows]
+
+    def lexical_search(
+        self,
+        document_set_id: UUID,
+        query: str,
+        limit: int,
+        category: str | None = None,
+        status: str | None = None,
+        version: str | None = None,
+    ) -> list[dict[str, Any]]:
+        filters, filter_params = self._document_filter_sql(
+            document_set_id, category, status, version
+        )
+        terms = re.findall(r"[A-Za-z0-9_]+", query)
+        if not terms:
+            return []
+        lexical_query = " | ".join(terms)
+        sql = f"""
+            SELECT s.id, d.source_path, d.title, d.category, d.status, d.version,
+                   d.effective_date, s.heading_path, s.start_line, s.end_line, s.content,
+                   ts_rank_cd(s.search_vector, to_tsquery('simple', %s)) AS lexical_score
+            FROM sections AS s
+            JOIN documents AS d ON d.id = s.document_id
+            WHERE {filters}
+              AND (
+                s.search_vector @@ to_tsquery('simple', %s)
+                OR lower(d.title) LIKE lower(%s)
+                OR lower(d.source_path) LIKE lower(%s)
+              )
+            ORDER BY lexical_score DESC, s.id
+            LIMIT %s
+        """
+        wildcard = f"%{query}%"
+        with connection(self.database_url) as database_connection:
+            rows = database_connection.execute(
+                sql,
+                [lexical_query, *filter_params, lexical_query, wildcard, wildcard, limit],
+            ).fetchall()
+        return [dict(row) for row in rows]
+
     def pending_embedding_sections(
         self, document_set_id: UUID, embedding_model: str
     ) -> list[dict[str, Any]]:
@@ -200,7 +284,7 @@ class DatabaseDocumentStore:
                     SET embedding = %s, embedding_model = %s, embedding_input_hash = %s
                     WHERE id = %s
                     """,
-                    (embedding, model, input_hash, section_id),
+                    (Vector(embedding), model, input_hash, section_id),
                 )
 
     def complete_index_run(self, run_id: UUID, documents_seen: int, sections_seen: int) -> None:
