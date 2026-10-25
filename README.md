@@ -57,7 +57,14 @@ curl -X POST \
   http://localhost:8000/api/v1/document-sets/DOCUMENT_SET_ID/ingest
 ```
 
-The ingestion workflow preserves front-matter metadata, headings, source paths, line ranges, content hashes, and searchable sections. Repeating ingestion replaces the existing records for that source instead of creating duplicates.
+Generate and persist OpenRouter embeddings for the ingested sections:
+
+```bash
+curl -X POST \
+  http://localhost:8000/api/v1/document-sets/DOCUMENT_SET_ID/index
+```
+
+The indexing endpoint batches embedding requests and skips sections already indexed with the configured embedding model. The ingestion workflow preserves front-matter metadata, headings, source paths, line ranges, content hashes, and searchable sections. Repeating ingestion replaces the existing records for that source instead of creating duplicates.
 
 ## Dataset
 

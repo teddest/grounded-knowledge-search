@@ -8,7 +8,9 @@ dependencies = [
   "pydantic-settings>=2.7,<3",
   "psycopg[binary]>=3.2,<4",
   "pyyaml>=6.0,<7",
-  "uvicorn[standard]>=0.34,<1"
+  "uvicorn[standard]>=0.34,<1",
+  "openai>=1.60,<2",
+  "pgvector>=0.4,<1",
 ]
 
 [dependency-groups]

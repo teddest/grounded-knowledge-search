@@ -9,6 +9,8 @@ from pydantic import BaseModel, Field
 
 from ..config import Settings, get_settings
 from ..database import DatabaseDocumentStore
+from ..embeddings import EmbeddingProviderError, OpenRouterEmbeddingProvider
+from ..indexing import EmbeddingIndexingService
 from ..ingestion import IngestionError, ingest_document_set
 
 router = APIRouter(prefix="/api/v1/document-sets", tags=["document-ingestion"])
@@ -33,6 +35,13 @@ class IngestionResponse(BaseModel):
     sections_seen: int
 
 
+class EmbeddingResponse(BaseModel):
+    document_set_id: UUID
+    status: str
+    sections_seen: int
+    sections_embedded: int
+
+
 def get_store(settings: Annotated[Settings, Depends(get_settings)]) -> DatabaseDocumentStore:
     return DatabaseDocumentStore(settings.database_url)
 
@@ -49,6 +58,12 @@ def resolve_document_root(configured_root: str, requested_path: str) -> Path:
     if not candidate.is_dir():
         raise IngestionError(f"document path is not a directory: {requested_path}")
     return candidate
+
+
+def get_embedding_provider(
+    settings: Annotated[Settings, Depends(get_settings)],
+) -> OpenRouterEmbeddingProvider:
+    return OpenRouterEmbeddingProvider(settings)
 
 
 def _document_set_response(row: dict[str, object]) -> DocumentSetResponse:
@@ -104,4 +119,31 @@ def ingest(
         status="ready",
         documents_seen=documents_seen,
         sections_seen=sections_seen,
+    )
+
+
+@router.post("/{document_set_id}/index", response_model=EmbeddingResponse)
+def index_embeddings(
+    document_set_id: UUID,
+    settings: Annotated[Settings, Depends(get_settings)],
+    store: Annotated[DatabaseDocumentStore, Depends(get_store)],
+    provider: Annotated[OpenRouterEmbeddingProvider, Depends(get_embedding_provider)],
+) -> EmbeddingResponse:
+    if store.get_document_set(document_set_id) is None:
+        raise HTTPException(status_code=404, detail="document set not found")
+
+    try:
+        sections_seen, sections_embedded = EmbeddingIndexingService(
+            store, provider, settings
+        ).index_document_set(document_set_id)
+    except EmbeddingProviderError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail="embedding indexing failed") from exc
+
+    return EmbeddingResponse(
+        document_set_id=document_set_id,
+        status="ready",
+        sections_seen=sections_seen,
+        sections_embedded=sections_embedded,
     )

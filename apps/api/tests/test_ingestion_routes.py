@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 
 from grounded_knowledge_api.config import Settings, get_settings
 from grounded_knowledge_api.database import DatabaseDocumentStore
+from grounded_knowledge_api.embeddings import EmbeddingProviderError
 from grounded_knowledge_api.ingestion import IngestionError
 from grounded_knowledge_api.main import create_app
 from grounded_knowledge_api.routes import ingestion as ingestion_routes
@@ -37,6 +38,7 @@ def client_for(tmp_path, store):
     app = create_app(settings)
     app.dependency_overrides[get_settings] = lambda: settings
     app.dependency_overrides[get_store] = lambda: store
+    app.dependency_overrides[ingestion_routes.get_embedding_provider] = lambda: object()
     return TestClient(app)
 
 
@@ -122,6 +124,69 @@ def test_ingest_document_set_maps_errors(monkeypatch, tmp_path):
         error_response = client.post(f"/api/v1/document-sets/{document_set['id']}/ingest")
     assert error_response.status_code == 500
     assert error_response.json()["detail"] == "document ingestion failed"
+
+
+def test_index_embeddings_success(monkeypatch, tmp_path):
+    (tmp_path / "docs").mkdir()
+    document_set = {"id": uuid4(), "name": "Docs", "root_path": "docs", "status": "ready"}
+    store = FakeStore(document_set)
+
+    class SuccessService:
+        def __init__(self, *_args):
+            pass
+
+        def index_document_set(self, _document_set_id):
+            return 4, 4
+
+    monkeypatch.setattr(ingestion_routes, "EmbeddingIndexingService", SuccessService)
+    with client_for(tmp_path, store) as client:
+        response = client.post(f"/api/v1/document-sets/{document_set['id']}/index")
+
+    assert response.status_code == 200
+    assert response.json()["sections_embedded"] == 4
+
+
+def test_index_embeddings_maps_provider_and_internal_errors(monkeypatch, tmp_path):
+    (tmp_path / "docs").mkdir()
+    document_set = {"id": uuid4(), "name": "Docs", "root_path": "docs", "status": "ready"}
+    store = FakeStore(document_set)
+
+    class ProviderErrorService:
+        def __init__(self, *_args):
+            pass
+
+        def index_document_set(self, _document_set_id):
+            raise EmbeddingProviderError("provider unavailable")
+
+    monkeypatch.setattr(ingestion_routes, "EmbeddingIndexingService", ProviderErrorService)
+    with client_for(tmp_path, store) as client:
+        provider_response = client.post(f"/api/v1/document-sets/{document_set['id']}/index")
+    assert provider_response.status_code == 503
+
+    class InternalErrorService:
+        def __init__(self, *_args):
+            pass
+
+        def index_document_set(self, _document_set_id):
+            raise RuntimeError("database unavailable")
+
+    monkeypatch.setattr(ingestion_routes, "EmbeddingIndexingService", InternalErrorService)
+    with client_for(tmp_path, store) as client:
+        internal_response = client.post(f"/api/v1/document-sets/{document_set['id']}/index")
+    assert internal_response.status_code == 500
+
+
+def test_index_embeddings_not_found(tmp_path):
+    with client_for(tmp_path, FakeStore()) as client:
+        response = client.post(f"/api/v1/document-sets/{uuid4()}/index")
+    assert response.status_code == 404
+
+
+def test_embedding_provider_dependency_uses_settings():
+    provider = ingestion_routes.get_embedding_provider(
+        Settings(openrouter_api_key="key", embedding_dimensions=2)
+    )
+    assert provider.model == "openai/text-embedding-3-small"
 
 
 def test_store_dependency_type_is_document_store():

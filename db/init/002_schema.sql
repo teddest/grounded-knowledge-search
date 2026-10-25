@@ -35,6 +35,8 @@ CREATE TABLE IF NOT EXISTS sections (
     end_line INTEGER,
     content TEXT NOT NULL,
     embedding VECTOR(1536),
+    embedding_model TEXT,
+    embedding_input_hash TEXT,
     search_vector TSVECTOR NOT NULL DEFAULT ''::tsvector,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE (document_id, ordinal)
