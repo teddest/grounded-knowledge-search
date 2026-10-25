@@ -14,7 +14,12 @@ The repository should be understandable and runnable by someone starting with no
 - Add grounded question answering through a configurable OpenRouter chat model.
 - Require generated answers to identify supporting source sections and acknowledge insufficient or conflicting evidence.
 - Add a labeled evaluation set and reporting for Hit@K, Precision@K, Recall@K, MRR, and source/citation correctness.
-- Add local Docker-based setup and educational documentation explaining the ingestion, retrieval, answer-generation, and evaluation flow.
+- Add a local Docker-based monorepo setup with one development script that starts the API, database, and web application.
+- Add hot reload for the Next.js/Tailwind web interface during local development.
+- Add educational documentation explaining the ingestion, retrieval, answer-generation, and evaluation flow.
+- Add a Next.js and TypeScript web interface styled with Tailwind CSS for interactive search and cited answers.
+- Add language-appropriate testing, linting, type-checking, integration testing, and coverage gates targeting near-complete coverage of first-party application logic.
+- Use pnpm for the Node.js workspace and a locked Python dependency workflow, with supply-chain safeguards for dependency installation, updates, and build scripts.
 
 ## Capabilities
 
@@ -26,6 +31,9 @@ The repository should be understandable and runnable by someone starting with no
 - `grounded-answers`: Generates answers from retrieved document evidence and presents source citations and uncertainty.
 - `retrieval-evaluation`: Runs labeled queries and reports ranking, retrieval, and citation-quality measures.
 - `local-development`: Provides a reproducible local setup and documentation for running the system with Docker and OpenRouter configuration.
+- `web-interface`: Provides the Next.js/Tailwind user interface for ingestion status, search, filters, results, and cited answers.
+- `quality-engineering`: Provides testing conventions, dependency seams, coverage reporting, and automated quality gates across the Python API and TypeScript web application.
+- `supply-chain-security`: Provides locked and auditable Python/Node dependencies, reviewed package-manager scripts, vulnerability checks, and safe update practices.
 
 ### Modified Capabilities
 
@@ -33,8 +41,10 @@ The repository should be understandable and runnable by someone starting with no
 
 ## Impact
 
-- Adds the initial application, API, persistence, and user-facing documentation for the repository.
+- Adds the initial Python API, Next.js web application, persistence, and user-facing documentation for the repository.
 - Adds PostgreSQL with the pgvector extension as the local retrieval store.
+- Adds a TypeScript/Tailwind frontend toolchain and a Python/TypeScript automated testing toolchain.
+- Adds pnpm workspace configuration, locked Python dependencies, package-manager policy, and dependency security checks.
 - Adds an OpenRouter integration for embedding and chat model requests; model names and credentials remain configurable.
 - Adds Docker-based local infrastructure and environment configuration.
 - Introduces APIs or commands for document ingestion, search, grounded questions, and evaluation.
