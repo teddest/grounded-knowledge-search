@@ -7,6 +7,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 import psycopg
+from pgvector.psycopg import register_vector
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
@@ -16,6 +17,7 @@ from .documents import SourceDocument
 @contextmanager
 def connection(database_url: str) -> Iterator[psycopg.Connection[Any]]:
     database_connection = psycopg.connect(database_url, row_factory=dict_row)
+    register_vector(database_connection)
     try:
         yield database_connection
         database_connection.commit()
@@ -165,6 +167,40 @@ class DatabaseDocumentStore:
                         section.content,
                         searchable_text,
                     ),
+                )
+
+    def pending_embedding_sections(
+        self, document_set_id: UUID, embedding_model: str
+    ) -> list[dict[str, Any]]:
+        with connection(self.database_url) as database_connection:
+            rows = database_connection.execute(
+                """
+                SELECT s.id, s.content, s.heading_path, s.start_line, s.end_line,
+                       d.source_path, d.title, d.category, d.status, d.version,
+                       d.effective_date
+                FROM sections AS s
+                JOIN documents AS d ON d.id = s.document_id
+                WHERE d.document_set_id = %s
+                  AND (s.embedding IS NULL OR s.embedding_model IS DISTINCT FROM %s)
+                ORDER BY d.source_path, s.ordinal
+                """,
+                (document_set_id, embedding_model),
+            ).fetchall()
+        return [dict(row) for row in rows]
+
+    def update_section_embeddings(
+        self,
+        embeddings: list[tuple[int, list[float], str, str]],
+    ) -> None:
+        with connection(self.database_url) as database_connection:
+            for section_id, embedding, model, input_hash in embeddings:
+                database_connection.execute(
+                    """
+                    UPDATE sections
+                    SET embedding = %s, embedding_model = %s, embedding_input_hash = %s
+                    WHERE id = %s
+                    """,
+                    (embedding, model, input_hash, section_id),
                 )
 
     def complete_index_run(self, run_id: UUID, documents_seen: int, sections_seen: int) -> None:

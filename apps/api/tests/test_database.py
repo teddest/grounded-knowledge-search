@@ -60,6 +60,7 @@ def source_document() -> SourceDocument:
 def test_connection_commits_and_closes(monkeypatch):
     fake = Mock()
     monkeypatch.setattr(database.psycopg, "connect", Mock(return_value=fake))
+    monkeypatch.setattr(database, "register_vector", Mock())
 
     with database.connection("postgresql://example") as connection:
         assert connection is fake
@@ -71,6 +72,7 @@ def test_connection_commits_and_closes(monkeypatch):
 def test_connection_rolls_back_and_closes_on_error(monkeypatch):
     fake = Mock()
     monkeypatch.setattr(database.psycopg, "connect", Mock(return_value=fake))
+    monkeypatch.setattr(database, "register_vector", Mock())
 
     with pytest.raises(RuntimeError, match="boom"):
         with database.connection("postgresql://example"):
@@ -133,6 +135,20 @@ def test_index_run_lifecycle(monkeypatch):
     monkeypatch.setattr(database, "connection", lambda _url: patched_connection(missing_fail))
     with pytest.raises(ValueError, match="index run not found"):
         store.fail_index_run(run_id, "failure")
+
+
+def test_embedding_section_queries_and_updates(monkeypatch):
+    store = database.DatabaseDocumentStore("postgresql://example")
+    row = {"id": 1, "content": "text", "source_path": "one.md"}
+    select_connection = FakeConnection([Result(many=[row])])
+    monkeypatch.setattr(database, "connection", lambda _url: patched_connection(select_connection))
+
+    assert store.pending_embedding_sections(uuid4(), "model") == [row]
+
+    update_connection = FakeConnection()
+    monkeypatch.setattr(database, "connection", lambda _url: patched_connection(update_connection))
+    store.update_section_embeddings([(1, [0.1, 0.2], "model", "hash")])
+    assert "UPDATE sections" in update_connection.calls[0][0]
 
 
 def test_replace_document_inserts_new_document(monkeypatch):

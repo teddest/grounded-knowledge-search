@@ -30,14 +30,14 @@
 
 ## 3. OpenRouter embeddings and indexing — `feat/embedding-indexing` (PR 3)
 
-- [ ] 3.1 Define an internal embedding-provider interface independent of the OpenRouter client.
-- [ ] 3.2 Implement the OpenRouter embeddings adapter using configurable model and request settings.
-- [ ] 3.3 Add batched embedding requests with bounded retries and actionable provider errors.
-- [ ] 3.4 Validate embedding dimensions before writing vectors to the database.
-- [ ] 3.5 Implement indexing orchestration from parsed sections through embeddings to persisted vector records.
-- [ ] 3.6 Ensure API keys, document content, and full embedding payloads are excluded from application logs.
-- [ ] 3.7 Add provider-mocked tests for successful batches, missing credentials, dimension mismatch, and retry failure.
-- [ ] 3.8 Add a corpus ingestion command or endpoint and verify that the checked-in dataset becomes searchable data.
+- [x] 3.1 Define an internal embedding-provider interface independent of the OpenRouter client.
+- [x] 3.2 Implement the OpenRouter embeddings adapter using configurable model and request settings.
+- [x] 3.3 Add batched embedding requests with bounded retries and actionable provider errors.
+- [x] 3.4 Validate embedding dimensions before writing vectors to the database.
+- [x] 3.5 Implement indexing orchestration from parsed sections through embeddings to persisted vector records.
+- [x] 3.6 Ensure API keys, document content, and full embedding payloads are excluded from application logs.
+- [x] 3.7 Add provider-mocked tests for successful batches, missing credentials, dimension mismatch, and retry failure.
+- [x] 3.8 Add a corpus ingestion command or endpoint and verify that the checked-in dataset becomes searchable data.
 
 ## 4. Hybrid retrieval — `feat/hybrid-retrieval` (PR 4)
 
