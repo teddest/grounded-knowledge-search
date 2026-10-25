@@ -137,9 +137,36 @@ There is no existing application data or production deployment to migrate. Imple
 
 Rollback is removing or recreating the local Docker volume and returning to the previous Git branch. No external service state is modified by the application.
 
-## Open Questions
+## Resolved Design Questions
 
-- Which OpenRouter embedding model should be the documented default? Select one available model after verifying its endpoint and vector dimension during implementation.
-- Should API client types be generated from the FastAPI OpenAPI schema or maintained in a small checked-in TypeScript contract module? Decide during the runtime-foundation branch and cover the choice with contract tests.
-- Which browser-level flow should be the required Playwright smoke test? The minimum candidate is ingest status → search → inspect source → ask a cited question.
-- Should file watching use native events by default with an opt-in polling flag, or use polling in all development containers for consistency? Verify on the supported development environments during implementation.
+### Embedding model
+
+Use `openai/text-embedding-3-small` as the documented default through OpenRouter. OpenRouter documents this model through its embeddings endpoint and shows a 1536-dimensional output configuration. Keep the model and dimension configurable, validate the returned dimension during startup/indexing, and verify current availability during implementation rather than treating the default as permanent. The official references are:
+
+- [OpenRouter embeddings API](https://openrouter.ai/docs/api_reference/embeddings)
+- [OpenRouter Text Embedding 3 Small](https://openrouter.ai/openai/text-embedding-3-small)
+
+### API contract generation
+
+Generate TypeScript types from the FastAPI OpenAPI schema into `packages/contracts` using a pinned, reviewed generator in the pnpm workspace. The FastAPI schema remains the source of truth; hand-maintained duplicate request/response types are not used. Contract generation and contract tests run when API response shapes change.
+
+### Required browser smoke flow
+
+The required Playwright flow is:
+
+1. Load the web application and verify the health/configuration state.
+2. Select the seeded document set and verify ready/indexed status using a deterministic test fixture.
+3. Submit a representative natural-language search query.
+4. Apply a metadata filter.
+5. Inspect a ranked source section and its metadata.
+6. Ask a grounded question and verify that the answer displays a citation linked to the returned source.
+
+The test backend uses deterministic fixtures or stubs; it does not call OpenRouter.
+
+### File watching
+
+Use polling by default inside Docker development containers so hot reload behaves consistently across macOS, Linux, and Windows host mounts. Expose a documented environment switch for native file events when they work reliably on a developer's environment. Verify the exact Next.js/watchpack and Python/watchfiles configuration against the versions selected during runtime setup.
+
+### Package managers
+
+Use pnpm for the Node.js workspace and uv for Python dependency resolution. Pin their versions, commit `pnpm-lock.yaml` and `uv.lock`, and use locked installs in Docker and automated checks.

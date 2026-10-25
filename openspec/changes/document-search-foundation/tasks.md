@@ -9,12 +9,13 @@
 - [ ] 1.7 Add the initial database schema for repositories/documents, sections, metadata, and indexing state.
 - [ ] 1.8 Add the FastAPI application shell and a database-backed health endpoint.
 - [ ] 1.9 Add the initial Next.js layout, accessible loading/error boundaries, and a health/configuration status surface.
-- [ ] 1.10 Add Python coverage configuration with branch coverage and the agreed near-100% gate for first-party logic.
-- [ ] 1.11 Add TypeScript coverage configuration with statement, branch, function, and line thresholds plus documented minimal exclusions.
-- [ ] 1.12 Add a safe `.env.example`, `pnpm-lock.yaml`, the Python lockfile, pinned package-manager versions, and verification that no credentials are committed.
-- [ ] 1.13 Add explicit registry configuration and reviewed lifecycle/build-script policy for pnpm and the Python package manager.
-- [ ] 1.14 Add `scripts/dev.sh` as the single development entry point and verify it starts every service with one command.
-- [ ] 1.15 Document the commands for starting the services and running API, web, type, lint, build, coverage, lockfile, and dependency security checks, including the hot-reload workflow.
+- [ ] 1.10 Generate the initial TypeScript API contract from the FastAPI OpenAPI schema into `packages/contracts` using a pinned pnpm tool.
+- [ ] 1.11 Add Python coverage configuration with branch coverage and the agreed near-100% gate for first-party logic.
+- [ ] 1.12 Add TypeScript coverage configuration with statement, branch, function, and line thresholds plus documented minimal exclusions.
+- [ ] 1.13 Add a safe `.env.example`, `pnpm-lock.yaml`, `uv.lock`, pinned package-manager versions, and verification that no credentials are committed.
+- [ ] 1.14 Add explicit registry configuration and reviewed lifecycle/build-script policy for pnpm and uv.
+- [ ] 1.15 Add `scripts/dev.sh` as the single development entry point and verify it starts every service with one command.
+- [ ] 1.16 Document the commands for starting the services and running API, web, type, lint, build, coverage, lockfile, and dependency security checks, including the hot-reload workflow.
 
 ## 2. Document model and ingestion — `feat/document-ingestion` (PR 2)
 
