@@ -73,15 +73,15 @@
 
 ## 7. Next.js learning interface — `feat/search-interface` (PR 7)
 
-- [ ] 7.1 Define typed API-client models and request functions for repositories, ingestion status, search, and grounded answers.
-- [ ] 7.2 Build the accessible document-set and indexing-status view with loading, empty, error, and retry states.
-- [ ] 7.3 Build the Tailwind-styled search form with query input and category/status/version filters.
-- [ ] 7.4 Build reusable result-card and source-detail components showing ranked evidence, metadata, excerpts, and locations.
-- [ ] 7.5 Build the grounded-answer view with citation markers linked to the returned source records.
-- [ ] 7.6 Keep interactive behavior in focused client components and keep non-interactive rendering in server components where appropriate.
-- [ ] 7.7 Add component and interaction tests for success, loading, empty, error, and citation states.
-- [ ] 7.8 Add the Playwright smoke flow for loading the app, searching, and inspecting a source using a deterministic backend fixture.
-- [ ] 7.9 Verify the interface against the primary corpus questions without adding application-specific dataset naming.
+- [x] 7.1 Define typed API-client models and request functions for repositories, ingestion status, search, and grounded answers.
+- [x] 7.2 Build the accessible document-set and indexing-status view with loading, empty, error, and retry states.
+- [x] 7.3 Build the Tailwind-styled search form with query input and category/status/version filters.
+- [x] 7.4 Build reusable result-card and source-detail components showing ranked evidence, metadata, excerpts, and locations.
+- [x] 7.5 Build the grounded-answer view with citation markers linked to the returned source records.
+- [x] 7.6 Keep interactive behavior in focused client components and keep non-interactive rendering in server components where appropriate.
+- [x] 7.7 Add component and interaction tests for success, loading, empty, error, and citation states.
+- [x] 7.8 Add the Playwright smoke flow for loading the app, searching, and inspecting a source using a deterministic backend fixture.
+- [x] 7.9 Verify the interface against the primary corpus questions without adding application-specific dataset naming.
 
 ## 8. Quality gates and contract verification — `test/quality-gates` (PR 8)
 

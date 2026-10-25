@@ -22,7 +22,15 @@ The script creates `.env` from `.env.example` when needed. The default local end
 - API health check: <http://localhost:8000/health>
 - PostgreSQL: `localhost:5432`
 
-The development containers bind-mount application source and use reload-friendly file watching. Add an `OPENROUTER_API_KEY` to `.env` when embedding or chat requests are implemented.
+The development containers bind-mount application source and use reload-friendly file watching. The web interface supports document-set selection, ingestion/indexing, hybrid search, filters, and cited grounded answers. Add an `OPENROUTER_API_KEY` to `.env` for embedding and chat requests.
+
+With the stack running, execute the deterministic browser smoke test:
+
+```bash
+pnpm --filter @grounded/web e2e
+```
+
+The Playwright test stubs the API responses and verifies the search and cited-answer flow without making model requests.
 
 Run the current foundation checks with:
 
