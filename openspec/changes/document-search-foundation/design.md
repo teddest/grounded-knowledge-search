@@ -37,7 +37,7 @@ Use FastAPI for the HTTP API and a separate Next.js application written in TypeS
 
 The frontend will use the App Router, `src/` organization, server components by default, and client components only where interactivity requires them. The development container will bind-mount the web source and run the Next.js development server so edits trigger hot reload without rebuilding the image. The API will use its equivalent reload mode for backend changes.
 
-The implementation will verify current stable framework guidance and commit lockfiles rather than assuming package versions. The frontend will use Tailwind CSS through the current official Next.js integration, with shared design tokens and reusable components instead of scattered ad hoc styles.
+The implementation will verify current stable framework guidance and commit lockfiles rather than assuming package versions. The Node.js LTS and package-manager versions will be pinned for the monorepo and used consistently in local development and Docker. The frontend will use Tailwind CSS through the current official Next.js integration, with shared design tokens and reusable components instead of scattered ad hoc styles.
 
 **Alternatives considered:** Serving static HTML from FastAPI would reduce setup but would not provide the requested Next.js/Tailwind learning surface. A single full-stack Next.js implementation would duplicate or replace the Python search service and make the retrieval architecture less explicit. A separate frontend repository would make local setup and coordinated changes harder.
 

@@ -1,6 +1,6 @@
 ## 1. Runtime foundation — `chore/runtime-foundation` (PR 1)
 
-- [ ] 1.1 Verify current official setup guidance for FastAPI, Next.js App Router, TypeScript, Tailwind CSS, pytest, Vitest, and Playwright; record selected versions in lockfiles rather than relying on unverified assumptions.
+- [ ] 1.1 Verify current official setup guidance for the supported Python version, Node.js LTS, package manager, FastAPI, Next.js App Router, TypeScript, Tailwind CSS, pytest, Vitest, and Playwright; record selected versions in lockfiles rather than relying on unverified assumptions.
 - [ ] 1.2 Create the monorepo application layout with `apps/api`, `apps/web`, `packages/contracts`, and `scripts`, plus root workspace configuration.
 - [ ] 1.3 Add the Python API dependency manifest, formatting/linting/type-checking configuration, and test commands.
 - [ ] 1.4 Add the Next.js App Router TypeScript project using `src/`, ESLint, Tailwind CSS through the current official integration, and frontend test commands.

@@ -35,12 +35,12 @@ Generated files, framework bootstrap code, configuration-only files, and externa
 - **WHEN** a source path is excluded from coverage
 - **THEN** the change documents why the path is non-testable or generated and does not hide domain behavior
 
-### Requirement: Static checks SHALL run for both application languages
-The repository SHALL provide repeatable commands for Python formatting/linting/type checking and TypeScript formatting/linting/type checking/build validation.
+### Requirement: Static checks SHALL cover Python and the Node.js/TypeScript toolchain
+The repository SHALL provide repeatable commands for Python formatting, linting, and type checking, plus Node.js package validation, TypeScript type checking, frontend linting, formatting, and build validation.
 
-#### Scenario: A type error is introduced in the web client
+#### Scenario: A type or package error is introduced in the web client
 - **WHEN** the quality checks run
-- **THEN** the TypeScript check fails before the change is considered ready
+- **THEN** the Node.js/TypeScript checks fail before the change is considered ready
 
 ### Requirement: API contracts SHALL be tested across the service boundary
 The project SHALL test that the TypeScript client models and the FastAPI response shapes agree for ingestion status, search results, and grounded answers.

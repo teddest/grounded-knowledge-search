@@ -48,6 +48,51 @@ This repository uses [OpenSpec](https://github.com/Fission-AI/OpenSpec). Install
 
 ## Implementation standards
 
+### Python API
+
+- Keep production Python configuration in `pyproject.toml` and verify the supported Python version before selecting dependencies.
+- Use type hints for public functions and strict static checking where practical; avoid `Any` and untyped boundary data.
+- Keep HTTP/Pydantic schemas, domain logic, persistence, and provider adapters in separate modules.
+- Use FastAPI dependency injection for database sessions and external providers rather than constructing clients inside route handlers.
+- Use ports/adapters or narrow interfaces at the database and OpenRouter boundaries so domain and unit tests do not require network access.
+- Prefer small pure functions for parsing, ranking, metrics, and formatting. Use classes when state, lifecycle, or an explicit interface makes them clearer.
+- Use explicit exception types and translate internal failures into stable API errors; never use bare `except` blocks.
+- Use the project formatter, linter, type checker, pytest, and branch coverage checks on every relevant change.
+
+### Node.js tooling and services
+
+- Verify and pin the supported Node.js LTS version and package-manager version; commit the lockfile and use the same package manager locally and in Docker.
+- Use `package.json` scripts as the canonical interface for development, linting, type checking, testing, coverage, and builds.
+- Prefer ESM modules, explicit imports, and small modules with one responsibility; avoid putting application logic in ad hoc build or shell scripts.
+- Validate environment variables at process startup and keep configuration separate from business logic.
+- Handle asynchronous operations explicitly, propagate errors with context, and do not leave unhandled promise rejections.
+- Keep Node-specific adapters and tooling separate from domain behavior so they can be tested without starting a server.
+
+### TypeScript and Next.js
+
+- Use strict TypeScript and avoid `any`, non-null assertions, and unchecked type casts unless the reason is documented.
+- Use the App Router and server components by default; add client components only for browser interactivity or client-side state.
+- Keep API calls in typed client modules rather than scattering raw `fetch` calls across components.
+- Keep presentation components focused and composable; keep retrieval, ranking, and answer-generation logic in the Python API.
+- Validate untrusted API responses at the boundary when generated types alone are insufficient.
+- Use accessible semantic HTML, keyboard-accessible controls, and explicit loading, empty, error, and retry states.
+- Use the project ESLint, formatter, TypeScript, unit/component, and Playwright checks.
+
+### SQL, Docker, and shell
+
+- Use versioned database migrations, parameterized SQL, explicit transactions, foreign keys, and indexes justified by query behavior.
+- Avoid `SELECT *` in application queries and inspect query plans for retrieval-critical queries.
+- Keep Docker images and base dependencies pinned or lockfile-controlled, expose health checks, and avoid putting secrets in images or layers.
+- Shell scripts must use `set -Eeuo pipefail`, quote variables, validate required tools/configuration, and be safe to rerun.
+- Prefer documented, testable commands over manual multi-terminal setup.
+
+### Cross-cutting design patterns
+
+- Use dependency inversion only at real boundaries such as databases, model providers, clocks, and file systems; do not add abstractions without a testability or replacement benefit.
+- Prefer composition and explicit data flow over global state, hidden singletons, and framework magic.
+- Keep external side effects at the edges and make core behavior deterministic where possible.
+- Treat framework defaults as hypotheses to verify against official documentation, not assumptions.
+
 - Preserve document metadata, source locations, version status, and effective dates.
 - Keep retrieval evidence separate from generated answers.
 - Never present an answer as supported when the indexed evidence is insufficient.
