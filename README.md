@@ -2,6 +2,44 @@
 
 This repository contains an educational document-search application and a fictional policy and procedure corpus.
 
+## Run locally
+
+Prerequisites:
+
+- Docker Desktop or Docker Engine with Compose
+- Node.js and pnpm versions defined by the repository configuration
+- uv for Python dependency management
+
+Start the database, API, and Next.js web application with one command:
+
+```bash
+./scripts/dev.sh
+```
+
+The script creates `.env` from `.env.example` when needed. The default local endpoints are:
+
+- Web application: <http://localhost:3001>
+- API health check: <http://localhost:8001/health>
+- PostgreSQL: `localhost:5433`
+
+The development containers bind-mount application source and use reload-friendly file watching. Add an `OPENROUTER_API_KEY` to `.env` when embedding or chat requests are implemented.
+
+Run the current foundation checks with:
+
+```bash
+cd apps/api
+uv run pytest --cov=grounded_knowledge_api --cov-branch
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy src
+
+cd ../..
+pnpm --filter @grounded/web test:coverage
+pnpm --filter @grounded/web typecheck
+pnpm --filter @grounded/web lint
+pnpm --filter @grounded/web build
+```
+
 ## Dataset
 
 **Northstar Relay** is the example dataset. It covers billing, onboarding, product behavior, support escalation, security, and incident response.
