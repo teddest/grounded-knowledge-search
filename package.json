@@ -1,0 +1,19 @@
+{
+  "name": "grounded-knowledge-search",
+  "private": true,
+  "packageManager": "pnpm@12.14.0",
+  "scripts": {
+    "dev": "./scripts/dev.sh",
+    "dev:down": "docker compose down",
+    "contracts:generate": "./scripts/generate-contracts.sh",
+    "web:dev": "pnpm --filter @grounded/web dev",
+    "web:build": "pnpm --filter @grounded/web build",
+    "lint": "pnpm --filter @grounded/web lint",
+    "typecheck": "pnpm --filter @grounded/web typecheck",
+    "test": "pnpm --filter @grounded/web test",
+    "test:coverage": "pnpm --filter @grounded/web test:coverage"
+  },
+  "devDependencies": {
+    "openapi-typescript": "7.13.0"
+  }
+}
