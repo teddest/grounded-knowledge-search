@@ -6,6 +6,113 @@
     "version": "0.1.0"
   },
   "paths": {
+    "/api/v1/document-sets": {
+      "get": {
+        "tags": [
+          "document-ingestion"
+        ],
+        "summary": "List Document Sets",
+        "operationId": "list_document_sets_api_v1_document_sets_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentSetResponse"
+                  },
+                  "type": "array",
+                  "title": "Response List Document Sets Api V1 Document Sets Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "document-ingestion"
+        ],
+        "summary": "Create Document Set",
+        "operationId": "create_document_set_api_v1_document_sets_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentSetCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentSetResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/document-sets/{document_set_id}/ingest": {
+      "post": {
+        "tags": [
+          "document-ingestion"
+        ],
+        "summary": "Ingest",
+        "operationId": "ingest_api_v1_document_sets__document_set_id__ingest_post",
+        "parameters": [
+          {
+            "name": "document_set_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Set Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IngestionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "summary": "Health",
@@ -48,6 +155,143 @@
             }
           }
         }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DocumentSetCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Path",
+            "default": "."
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "DocumentSetCreate"
+      },
+      "DocumentSetResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "root_path": {
+            "type": "string",
+            "title": "Root Path"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "root_path",
+          "status"
+        ],
+        "title": "DocumentSetResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "IngestionResponse": {
+        "properties": {
+          "document_set_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Document Set Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "documents_seen": {
+            "type": "integer",
+            "title": "Documents Seen"
+          },
+          "sections_seen": {
+            "type": "integer",
+            "title": "Sections Seen"
+          }
+        },
+        "type": "object",
+        "required": [
+          "document_set_id",
+          "status",
+          "documents_seen",
+          "sections_seen"
+        ],
+        "title": "IngestionResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
       }
     }
   }

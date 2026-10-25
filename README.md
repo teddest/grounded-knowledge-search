@@ -40,6 +40,25 @@ pnpm --filter @grounded/web lint
 pnpm --filter @grounded/web build
 ```
 
+## Ingest a document set
+
+Register a directory relative to the configured repository root:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/document-sets \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"policies","path":"policies"}'
+```
+
+Use the returned `id` to ingest the Markdown and text documents:
+
+```bash
+curl -X POST \
+  http://localhost:8000/api/v1/document-sets/DOCUMENT_SET_ID/ingest
+```
+
+The ingestion workflow preserves front-matter metadata, headings, source paths, line ranges, content hashes, and searchable sections. Repeating ingestion replaces the existing records for that source instead of creating duplicates.
+
 ## Dataset
 
 **Northstar Relay** is the example dataset. It covers billing, onboarding, product behavior, support escalation, security, and incident response.

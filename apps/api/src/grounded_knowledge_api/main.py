@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import Settings, get_settings
 from .database import database_checker
+from .routes.ingestion import router as ingestion_router
 
 
 def get_database_health_checker(
@@ -21,6 +22,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         version="0.1.0",
         description="Document ingestion, retrieval, grounded answers, and evaluation.",
     )
+    application.include_router(ingestion_router)
     application.add_middleware(
         CORSMiddleware,
         allow_origins=application_settings.api_cors_origins,
