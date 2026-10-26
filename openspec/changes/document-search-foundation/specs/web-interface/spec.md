@@ -35,6 +35,13 @@ The interface SHALL provide accessible loading indicators, no-result messaging, 
 - **WHEN** the API returns no matching sections
 - **THEN** the interface explains that no supporting evidence was found instead of displaying an empty or misleading answer
 
+### Requirement: The web interface SHALL provide an educational About page
+The application SHALL provide a discoverable About page that explains the system purpose, architecture, document-to-answer data flow, technology choices, evaluation approach, limitations, and external model data-handling considerations.
+
+#### Scenario: A reader opens the About page
+- **WHEN** the reader navigates to the About page
+- **THEN** the page presents the major system concepts in accessible, readable sections without requiring a configured model key
+
 ### Requirement: The frontend SHALL keep application logic separated from presentation
 The web application SHALL use typed API-client functions, reusable presentational components, and explicit client/server boundaries. Retrieval, ranking, embedding, and answer-generation logic SHALL remain in the Python API.
 

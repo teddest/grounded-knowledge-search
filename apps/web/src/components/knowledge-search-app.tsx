@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Streamdown } from "streamdown";
 
@@ -159,7 +160,10 @@ export function KnowledgeSearchApp(): React.JSX.Element {
             sources returned by search.
           </p>
         </div>
-        <div className="lg:mt-8">
+        <div className="flex items-center gap-3 lg:mt-8">
+          <Button variant="ghost" asChild>
+            <Link href="/about">About</Link>
+          </Button>
           <ServiceStatus />
         </div>
       </header>
