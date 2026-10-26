@@ -50,6 +50,12 @@ export async function listDocumentSets(): Promise<DocumentSet[]> {
   return data;
 }
 
+export async function discoverDocumentSets(): Promise<DocumentSet[]> {
+  const { data, error } = await client.POST("/api/v1/document-sets/discover", {});
+  if (error || !data) throwApiError(500, "Could not discover document sets.");
+  return data;
+}
+
 export async function createDocumentSet(name: string, path: string): Promise<DocumentSet> {
   const { data, error } = await client.POST("/api/v1/document-sets", {
     body: { name, path },

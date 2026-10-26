@@ -8,10 +8,10 @@ import { ApiError } from "@/lib/api";
 const api = vi.hoisted(() => ({
   askGroundedQuestion: vi.fn(),
   createDocumentSet: vi.fn(),
+  discoverDocumentSets: vi.fn(),
   fetchHealth: vi.fn(),
   indexDocumentSet: vi.fn(),
   ingestDocumentSet: vi.fn(),
-  listDocumentSets: vi.fn(),
   searchDocuments: vi.fn(),
 }));
 
@@ -62,7 +62,7 @@ function answerResponse() {
 }
 
 async function renderReady() {
-  api.listDocumentSets.mockResolvedValue([documentSet]);
+  api.discoverDocumentSets.mockResolvedValue([documentSet]);
   api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
   render(<KnowledgeSearchApp />);
   await waitFor(() => expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeVisible());
@@ -93,26 +93,84 @@ describe("KnowledgeSearchApp", () => {
   it("creates and selects an all-documents set by default", async () => {
     const user = userEvent.setup();
     const policies = { ...documentSet, id: "policies", name: "Policies", root_path: "policies" };
-    api.listDocumentSets.mockResolvedValue([policies]);
+    api.discoverDocumentSets.mockResolvedValue([policies]);
     api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
     render(<KnowledgeSearchApp />);
 
-    await waitFor(() => expect(screen.getByText("All documents (registered)")).toBeVisible());
+    await waitFor(() => expect(screen.getByText("All documents (needs indexing)")).toBeVisible());
     expect(api.createDocumentSet).toHaveBeenCalledWith("All documents", "documents");
+    await user.type(screen.getByLabelText("Search query"), "refund");
+    await user.click(screen.getByRole("button", { name: "Search" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Analyze and index this document set before searching.");
+    await user.click(screen.getByRole("tab", { name: "Ask a grounded question" }));
+    await user.type(screen.getByLabelText("Question"), "What is the rule?");
+    await user.click(screen.getByRole("button", { name: "Ask" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Analyze and index this document set before asking questions.");
     await user.click(screen.getByRole("button", { name: "Analyze and index" }));
     expect(api.ingestDocumentSet).toHaveBeenCalledWith("all-set");
+    expect(api.ingestDocumentSet).toHaveBeenCalledWith("policies");
+  });
+
+  it("registers a custom document set", async () => {
+    const user = userEvent.setup();
+    await renderReady();
+    const customSet = {
+      id: "custom-set",
+      name: "Billing subset",
+      root_path: "documents/policies",
+      status: "registered",
+    };
+    api.createDocumentSet.mockResolvedValue(customSet);
+    api.discoverDocumentSets.mockResolvedValue([documentSet, customSet]);
+
+    await user.type(screen.getByLabelText("Document set name"), "Billing subset");
+    await user.type(screen.getByLabelText("Document set path"), "documents/policies");
+    await user.click(screen.getByRole("button", { name: "Register folder" }));
+
+    expect(await screen.findByText("Document set registered.")).toBeVisible();
+    expect(api.createDocumentSet).toHaveBeenCalledWith("Billing subset", "documents/policies");
+  });
+
+  it("validates and reports custom document-set registration errors", async () => {
+    const user = userEvent.setup();
+    await renderReady();
+    await user.click(screen.getByRole("button", { name: "Register folder" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("repository-relative document path");
+
+    await user.type(screen.getByLabelText("Document set path"), "documents/missing");
+    api.createDocumentSet.mockRejectedValue(new ApiError("Path does not exist", 400));
+    await user.click(screen.getByRole("button", { name: "Register folder" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Path does not exist");
+  });
+
+  it("indexes only the selected custom document set", async () => {
+    const user = userEvent.setup();
+    const policies = { ...documentSet, id: "policies", name: "Policies", root_path: "documents/policies" };
+    api.discoverDocumentSets.mockResolvedValue([documentSet, policies]);
+    api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
+    api.ingestDocumentSet.mockResolvedValue(undefined);
+    api.indexDocumentSet.mockResolvedValue(undefined);
+    render(<KnowledgeSearchApp />);
+
+    await waitFor(() => expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeVisible());
+    await user.click(screen.getByRole("combobox", { name: "Indexed documents" }));
+    await user.click(screen.getAllByRole("option", { name: /Policies/ })[1]);
+    await user.click(screen.getByRole("button", { name: "Analyze and index" }));
+
+    await waitFor(() => expect(screen.getByText(/Documents analyzed and embeddings indexed/)).toBeVisible());
+    expect(api.ingestDocumentSet).toHaveBeenCalledWith("policies");
   });
 
   it("shows loading and unknown-load-error states", async () => {
     let resolve: (value: typeof documentSet[]) => void = () => undefined;
-    api.listDocumentSets.mockReturnValue(new Promise((value) => (resolve = value)));
+    api.discoverDocumentSets.mockReturnValue(new Promise((value) => (resolve = value)));
     api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
     render(<KnowledgeSearchApp />);
     expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeDisabled();
     resolve([documentSet]);
     await waitFor(() => expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeVisible());
 
-    api.listDocumentSets.mockRejectedValue("network failure");
+    api.discoverDocumentSets.mockRejectedValue("network failure");
     render(<KnowledgeSearchApp />);
     expect(await screen.findByRole("alert")).toHaveTextContent("Could not load document sets.");
   });
@@ -122,13 +180,13 @@ describe("KnowledgeSearchApp", () => {
     await renderReady();
     api.ingestDocumentSet.mockResolvedValue(undefined);
     api.indexDocumentSet.mockResolvedValue(undefined);
-    api.listDocumentSets.mockResolvedValue([documentSet]);
+    api.discoverDocumentSets.mockResolvedValue([documentSet]);
 
     await user.click(screen.getByRole("button", { name: "Analyze and index" }));
 
-    await waitFor(() => expect(screen.getByText(/Documents analyzed/)).toBeVisible());
+    await waitFor(() => expect(screen.getByText(/analyzed and embeddings indexed/)).toBeVisible());
     await user.click(screen.getByRole("button", { name: "Dismiss notification" }));
-    expect(screen.queryByText(/Documents analyzed/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/analyzed and embeddings indexed/)).not.toBeInTheDocument();
     expect(api.ingestDocumentSet).toHaveBeenCalledWith("set-1");
     expect(api.indexDocumentSet).toHaveBeenCalledWith("set-1");
   });
@@ -141,7 +199,7 @@ describe("KnowledgeSearchApp", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("No key");
 
     cleanup();
-    api.listDocumentSets.mockResolvedValue([]);
+    api.discoverDocumentSets.mockResolvedValue([]);
     api.createDocumentSet.mockRejectedValue(new Error("default set unavailable"));
     render(<KnowledgeSearchApp />);
     await waitFor(() => expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeVisible());
@@ -231,7 +289,7 @@ describe("KnowledgeSearchApp", () => {
   it("validates missing selections and supports changing document sets", async () => {
     const user = userEvent.setup();
     const secondSet = { ...documentSet, id: "set-2", name: "Procedures" };
-    api.listDocumentSets.mockResolvedValue([documentSet, secondSet]);
+    api.discoverDocumentSets.mockResolvedValue([documentSet, secondSet]);
     api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
     render(<KnowledgeSearchApp />);
     await waitFor(() => expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeVisible());
@@ -240,7 +298,7 @@ describe("KnowledgeSearchApp", () => {
     expect(screen.getByText("Procedures (ready)")).toBeVisible();
 
     cleanup();
-    api.listDocumentSets.mockResolvedValue([]);
+    api.discoverDocumentSets.mockResolvedValue([]);
     api.createDocumentSet.mockRejectedValue(new Error("default set unavailable"));
     render(<KnowledgeSearchApp />);
     await waitFor(() => expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeVisible());
@@ -252,7 +310,7 @@ describe("KnowledgeSearchApp", () => {
   });
 
   it("shows provider status errors", async () => {
-    api.listDocumentSets.mockResolvedValue([documentSet]);
+    api.discoverDocumentSets.mockResolvedValue([documentSet]);
     api.fetchHealth.mockRejectedValue(new Error("API is unavailable"));
     render(<KnowledgeSearchApp />);
 

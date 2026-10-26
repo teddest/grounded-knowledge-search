@@ -1,6 +1,10 @@
 "use client";
 
 import type { DocumentSet } from "@/lib/api";
+
+function statusLabel(status: string): string {
+  return status === "registered" ? "needs indexing" : status;
+}
 import {
   Select,
   SelectContent,
@@ -37,7 +41,7 @@ export function DocumentSetSelect({
         ) : (
           documentSets.map((documentSet) => (
             <SelectItem key={documentSet.id} value={documentSet.id}>
-              {documentSet.name} ({documentSet.status})
+              {documentSet.name} ({statusLabel(documentSet.status)})
             </SelectItem>
           ))
         )}
