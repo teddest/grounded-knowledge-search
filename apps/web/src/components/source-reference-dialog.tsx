@@ -44,7 +44,7 @@ export function SourceReferenceDialog({
                 </Badge>
               ))}
             </div>
-            <Tabs defaultValue="formatted">
+            <Tabs defaultValue="source">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="formatted">Formatted</TabsTrigger>
                 <TabsTrigger value="source">Source lines</TabsTrigger>

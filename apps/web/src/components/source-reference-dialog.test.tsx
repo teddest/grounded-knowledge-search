@@ -26,6 +26,8 @@ describe("SourceReferenceDialog", () => {
     expect(screen.getByRole("dialog")).toBeVisible();
     expect(screen.getByRole("heading", { name: "Refund Policy" })).toBeVisible();
     expect(screen.getByText("refunds-2025.md:13-15")).toBeVisible();
+    expect(screen.getByRole("tab", { name: "Source lines" })).toHaveAttribute("aria-selected", "true");
+    await user.click(screen.getByRole("tab", { name: "Formatted" }));
     expect(screen.getByRole("dialog")).toHaveTextContent("Annual subscriptions");
     expect(screen.getByText("Annual plans")).toBeVisible();
 
