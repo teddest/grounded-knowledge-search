@@ -13,7 +13,7 @@ const source: SearchResult = {
   version: "2025.1",
   heading_path: ["Refunds", "Annual plans"],
   start_line: 13,
-  end_line: 15,
+  end_line: 17,
   content: "Annual subscriptions have a **30-day** refund window.\nThe rule is current.",
   fusion_score: 0.03,
 };
@@ -24,11 +24,13 @@ describe("SourceReferenceDialog", () => {
 
     expect(screen.getByRole("dialog")).toBeVisible();
     expect(screen.getByRole("heading", { name: "Refund Policy" })).toBeVisible();
-    expect(screen.getByText("refunds-2025.md:13-15")).toBeVisible();
+    expect(screen.getByText("refunds-2025.md:13-17")).toBeVisible();
     expect(screen.getByRole("dialog")).toHaveTextContent("Annual subscriptions");
     expect(screen.getByText("Annual plans")).toBeVisible();
     expect(screen.getByText("13")).toBeVisible();
     expect(screen.getByText("14")).toBeVisible();
+    expect(screen.getByText("16")).toBeVisible();
+    expect(screen.getByText("17")).toBeVisible();
   });
 
   it("renders fallback metadata and unknown line numbers", () => {

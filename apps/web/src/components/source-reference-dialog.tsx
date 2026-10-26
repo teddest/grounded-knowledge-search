@@ -22,6 +22,11 @@ export function SourceReferenceDialog({
   onOpenChange,
 }: SourceReferenceDialogProps): React.JSX.Element {
   const lines = source?.content.split("\n") ?? [];
+  const startLine = source?.start_line;
+  const endLine = source?.end_line;
+  const lineNumbers = startLine != null && endLine != null
+    ? Array.from({ length: endLine - startLine + 1 }, (_, index) => startLine + index)
+    : lines.map(() => "?");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -45,9 +50,9 @@ export function SourceReferenceDialog({
             </div>
             <div className="mt-4 flex max-h-[60vh] overflow-auto rounded-lg border border-slate-200 bg-slate-950 text-sm text-slate-100">
               <div aria-hidden="true" className="shrink-0 border-r border-slate-800 px-3 py-4 text-right font-mono text-slate-500">
-                {lines.map((_, index) => (
+                {lineNumbers.map((lineNumber, index) => (
                   <div key={`${source.id}-line-${index}`} className="leading-6">
-                    {source.start_line == null ? "?" : source.start_line + index}
+                    {lineNumber}
                   </div>
                 ))}
               </div>
