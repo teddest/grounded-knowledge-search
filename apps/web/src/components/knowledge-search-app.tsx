@@ -22,9 +22,11 @@ import { DocumentSetSelect } from "@/components/document-set-select";
 import { ResultCard } from "@/components/result-card";
 import { ServiceStatus } from "@/components/service-status";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type BusyState = "loading" | "indexing" | "searching" | "answering" | null;
 type FilterState = { category: string; status: string; version: string };
@@ -199,102 +201,116 @@ export function KnowledgeSearchApp(): React.JSX.Element {
       </Card>
 
       {(error || notice) && (
-        <div
-          className={`mt-6 rounded-lg border px-4 py-3 text-sm ${
-            error
-              ? "border-red-200 bg-red-50 text-red-800"
-              : "border-emerald-200 bg-emerald-50 text-emerald-800"
-          }`}
-          role={error ? "alert" : "status"}
-        >
-          <span>{error || notice}</span>
-          {notice && !error && (
-            <button
-              type="button"
-              className="ml-4 font-semibold hover:opacity-70"
-              aria-label="Dismiss notification"
-              onClick={() => setNotice("")}
-            >
-              ×
-            </button>
-          )}
-        </div>
+        <Alert className="mt-6" variant={error ? "destructive" : "default"}>
+          <AlertDescription className="flex items-center justify-between gap-4">
+            <span>{error || notice}</span>
+            {notice && !error && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                aria-label="Dismiss notification"
+                onClick={() => setNotice("")}
+              >
+                Dismiss
+              </Button>
+            )}
+          </AlertDescription>
+        </Alert>
       )}
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader>
-            <h2 className="text-xl font-semibold text-slate-950">Search evidence</h2>
-          </CardHeader>
-          <CardContent>
-          <form className="mt-4 space-y-4" onSubmit={handleSearch}>
-            <Label htmlFor="search-query">Search query</Label>
-            <div className="flex gap-3">
-              <Input
-                id="search-query"
-                className="min-w-0 flex-1"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="What is the annual refund window?"
-              />
-              <Button variant="secondary" disabled={busy !== null} type="submit">
-                {busy === "searching" ? "Searching…" : "Search"}
-              </Button>
-            </div>
-            <FilterControls filters={filters} setFilters={setFilters} />
-          </form>
-          </CardContent>
-        </Card>
+      <Tabs defaultValue="search" className="mt-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="search">Search evidence</TabsTrigger>
+          <TabsTrigger value="ask">Ask a grounded question</TabsTrigger>
+        </TabsList>
 
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader>
-            <h2 className="text-xl font-semibold text-slate-950">Ask a grounded question</h2>
-          </CardHeader>
-          <CardContent>
-          <form className="mt-4 space-y-4" onSubmit={handleAsk}>
-            <Label htmlFor="question">Question</Label>
-            <div className="flex gap-3">
-              <Input
-                id="question"
-                className="min-w-0 flex-1"
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                placeholder="What should Support do after a failed payment?"
-              />
-              <Button disabled={busy !== null} type="submit">
-                {busy === "answering" ? "Answering…" : "Ask"}
-              </Button>
-            </div>
-          </form>
-          {answer && (
-            <div className="mt-6 rounded-xl bg-slate-50 p-5">
-              <h3 className="font-semibold text-slate-950">Answer</h3>
-              <Streamdown mode="static" className="mt-3 text-slate-800">
-                {answer.answer}
-              </Streamdown>
-              <h3 className="mt-5 font-semibold text-slate-950">Sources</h3>
-              <ul className="mt-2 space-y-2 text-sm text-sky-800">
-                {answer.sources.map((source, index) => (
-                  <li key={source.id}>
-                    [{index + 1}] {source.source_path}:{source.start_line ?? "?"}-
-                    {source.end_line ?? "?"}
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <TabsContent value="search" className="space-y-6">
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader>
+              <h2 className="text-xl font-semibold text-slate-950">Search evidence</h2>
+            </CardHeader>
+            <CardContent>
+              <form className="space-y-4" onSubmit={handleSearch}>
+                <Label htmlFor="search-query">Search query</Label>
+                <div className="flex gap-3">
+                  <Input
+                    id="search-query"
+                    className="min-w-0 flex-1"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="What is the annual refund window?"
+                  />
+                  <Button variant="secondary" disabled={busy !== null} type="submit">
+                    {busy === "searching" ? "Searching…" : "Search"}
+                  </Button>
+                </div>
+                <FilterControls filters={filters} setFilters={setFilters} />
+              </form>
+            </CardContent>
+          </Card>
+
+          {results.length > 0 ? (
+            <section aria-label="Search results" className="space-y-3">
+              <div className="flex items-baseline justify-between">
+                <h2 className="text-xl font-semibold text-slate-950">Ranked evidence</h2>
+                <span className="text-sm text-muted-foreground">{results.length} results</span>
+              </div>
+              {results.map((result, index) => (
+                <ResultCard key={result.id} result={result} rank={index + 1} />
+              ))}
+            </section>
+          ) : (
+            <p className="text-sm text-muted-foreground">Search to see ranked evidence.</p>
           )}
-          </CardContent>
-        </Card>
-      </div>
+        </TabsContent>
 
-      {results.length > 0 && (
-        <section aria-label="Search results" className="mt-6 space-y-3">
-          <h2 className="text-xl font-semibold text-slate-950">Ranked evidence</h2>
-          {results.map((result, index) => (
-            <ResultCard key={result.id} result={result} rank={index + 1} />
-          ))}
-        </section>
-      )}
+        <TabsContent value="ask">
+          <Card className="border-slate-200 shadow-sm">
+            <CardHeader>
+              <h2 className="text-xl font-semibold text-slate-950">Ask a grounded question</h2>
+            </CardHeader>
+            <CardContent>
+              <form className="space-y-4" onSubmit={handleAsk}>
+                <Label htmlFor="question">Question</Label>
+                <div className="flex gap-3">
+                  <Input
+                    id="question"
+                    className="min-w-0 flex-1"
+                    value={question}
+                    onChange={(event) => setQuestion(event.target.value)}
+                    placeholder="What should Support do after a failed payment?"
+                  />
+                  <Button disabled={busy !== null} type="submit">
+                    {busy === "answering" ? "Answering…" : "Ask"}
+                  </Button>
+                </div>
+              </form>
+              {answer ? (
+                <div className="mt-6 rounded-xl bg-slate-50 p-5">
+                  <h3 className="font-semibold text-slate-950">Answer</h3>
+                  <Streamdown mode="static" className="mt-3 text-slate-800">
+                    {answer.answer}
+                  </Streamdown>
+                  <h3 className="mt-5 font-semibold text-slate-950">Sources</h3>
+                  <ul className="mt-2 space-y-2 text-sm text-sky-800">
+                    {answer.sources.map((source, index) => (
+                      <li key={source.id}>
+                        [{index + 1}] {source.source_path}:{source.start_line ?? "?"}-
+                        {source.end_line ?? "?"}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="mt-6 text-sm text-muted-foreground">
+                  Ask a question to receive a cited answer grounded in the retrieved documents.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </main>
   );
 }

@@ -190,6 +190,7 @@ describe("KnowledgeSearchApp", () => {
     await renderReady();
     api.askGroundedQuestion.mockResolvedValue(answerResponse());
 
+    await user.click(screen.getByRole("tab", { name: "Ask a grounded question" }));
     await user.type(screen.getByLabelText("Question"), "What is the refund rule?");
     await user.click(screen.getByRole("button", { name: "Ask" }));
 
@@ -204,6 +205,7 @@ describe("KnowledgeSearchApp", () => {
       answer: "Evidence [1]",
       sources: [{ ...searchResult, start_line: null, end_line: null }],
     });
+    await user.click(screen.getByRole("tab", { name: "Ask a grounded question" }));
     await user.type(screen.getByLabelText("Question"), "What is the rule?");
     await user.click(screen.getByRole("button", { name: "Ask" }));
     expect(await screen.findByText("[1] refunds-2025.md:?-?")).toBeVisible();
@@ -213,6 +215,7 @@ describe("KnowledgeSearchApp", () => {
     const user = userEvent.setup();
     await renderReady();
     api.askGroundedQuestion.mockRejectedValue(new Error("model unavailable"));
+    await user.click(screen.getByRole("tab", { name: "Ask a grounded question" }));
     await user.type(screen.getByLabelText("Question"), "What is the rule?");
     await user.click(screen.getByRole("button", { name: "Ask" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("model unavailable");
@@ -240,6 +243,7 @@ describe("KnowledgeSearchApp", () => {
     await waitFor(() => expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeVisible());
     await user.click(screen.getByRole("button", { name: "Search" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Select a document set first.");
+    await user.click(screen.getByRole("tab", { name: "Ask a grounded question" }));
     await user.click(screen.getByRole("button", { name: "Ask" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Select a document set first.");
   });
