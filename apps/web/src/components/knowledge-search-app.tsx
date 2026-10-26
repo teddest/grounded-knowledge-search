@@ -158,7 +158,7 @@ export function KnowledgeSearchApp(): React.JSX.Element {
 
   return (
     <main className="mx-auto min-h-screen max-w-6xl px-6 py-10">
-      <header className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+      <header className="relative mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
             Grounded Knowledge Search
@@ -171,13 +171,15 @@ export function KnowledgeSearchApp(): React.JSX.Element {
             sources returned by search.
           </p>
         </div>
-        <div className="flex flex-col items-end gap-3 lg:self-center">
+        <div className="flex justify-end lg:absolute lg:right-0 lg:top-0">
           <Button size="lg" className="shadow-sm" asChild>
             <Link href="/about">
               <Info />
               About this app
             </Link>
           </Button>
+        </div>
+        <div className="flex justify-end lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2">
           <ServiceStatus />
         </div>
       </header>
