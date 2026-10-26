@@ -4,10 +4,10 @@
   "k": 5,
   "query_count": 22,
   "metrics": {
-    "hit_at_k": 0.9545454545,
-    "precision_at_k": 0.4272727273,
-    "recall_at_k": 0.8257575758,
-    "mrr": 0.7727272727
+    "hit_at_k": 1.0,
+    "precision_at_k": 0.5909090909,
+    "recall_at_k": 0.9545454545,
+    "mrr": 0.9696969697
   },
   "interpretation": "This is a reproducible baseline for the checked-in synthetic corpus and evaluation questions, not a production quality claim.",
   "limitations": [
