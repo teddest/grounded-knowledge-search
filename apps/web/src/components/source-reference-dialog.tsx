@@ -21,12 +21,6 @@ export function SourceReferenceDialog({
   open,
   onOpenChange,
 }: SourceReferenceDialogProps): React.JSX.Element {
-  const lines = source?.content.split("\n") ?? [];
-  const startLine = source?.start_line;
-  const endLine = source?.end_line;
-  const lineNumbers = startLine != null && endLine != null
-    ? Array.from({ length: endLine - startLine + 1 }, (_, index) => startLine + index)
-    : lines.map(() => "?");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -48,19 +42,13 @@ export function SourceReferenceDialog({
                 </Badge>
               ))}
             </div>
-            <div className="mt-4 flex max-h-[60vh] overflow-auto rounded-lg border border-slate-200 bg-slate-950 text-sm text-slate-100">
-              <div aria-hidden="true" className="shrink-0 border-r border-slate-800 px-3 py-4 text-right font-mono text-slate-500">
-                {lineNumbers.map((lineNumber, index) => (
-                  <div key={`${source.id}-line-${index}`} className="leading-6">
-                    {lineNumber}
-                  </div>
-                ))}
+            <div className="mt-4 max-h-[60vh] overflow-auto rounded-lg border border-slate-200 bg-slate-950 p-4 text-sm text-slate-100 [&_a]:text-sky-300 [&_code]:text-sky-200 [&_pre]:bg-slate-900 [&_strong]:text-white">
+              <div className="mb-3 font-mono text-xs text-slate-500">
+                Source lines {source.start_line ?? "?"}–{source.end_line ?? "?"}
               </div>
-              <div className="min-w-0 p-4 [&_a]:text-sky-300 [&_code]:text-sky-200 [&_pre]:bg-slate-900 [&_strong]:text-white">
-                <Streamdown mode="static" className="text-slate-100">
-                  {source.content}
-                </Streamdown>
-              </div>
+              <Streamdown mode="static" className="text-slate-100">
+                {source.content}
+              </Streamdown>
             </div>
           </>
         )}

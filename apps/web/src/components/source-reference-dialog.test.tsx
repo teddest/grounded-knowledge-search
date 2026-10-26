@@ -27,10 +27,7 @@ describe("SourceReferenceDialog", () => {
     expect(screen.getByText("refunds-2025.md:13-17")).toBeVisible();
     expect(screen.getByRole("dialog")).toHaveTextContent("Annual subscriptions");
     expect(screen.getByText("Annual plans")).toBeVisible();
-    expect(screen.getByText("13")).toBeVisible();
-    expect(screen.getByText("14")).toBeVisible();
-    expect(screen.getByText("16")).toBeVisible();
-    expect(screen.getByText("17")).toBeVisible();
+    expect(screen.getByText("Source lines 13–17")).toBeVisible();
   });
 
   it("renders fallback metadata and unknown line numbers", () => {
