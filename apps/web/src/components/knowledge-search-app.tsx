@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Info } from "lucide-react";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Streamdown } from "streamdown";
 
@@ -165,8 +166,16 @@ export function KnowledgeSearchApp(): React.JSX.Element {
           </p>
         </div>
         <div className="flex items-center gap-3 lg:mt-8">
-          <Button variant="ghost" asChild>
-            <Link href="/about">About</Link>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-sky-200 text-sky-800 shadow-sm hover:bg-sky-50"
+            asChild
+          >
+            <Link href="/about">
+              <Info />
+              About this app
+            </Link>
           </Button>
           <ServiceStatus />
         </div>

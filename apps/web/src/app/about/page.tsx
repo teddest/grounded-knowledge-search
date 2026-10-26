@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -44,8 +45,11 @@ export default function AboutPage(): React.JSX.Element {
             grounded generation, and search evaluation.
           </p>
         </div>
-        <Button variant="outline" asChild>
-          <Link href="/">Back to search</Link>
+        <Button size="lg" className="shadow-sm" asChild>
+          <Link href="/">
+            <ArrowLeft />
+            Back to search
+          </Link>
         </Button>
       </header>
 
