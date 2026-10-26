@@ -11,7 +11,7 @@ from ..config import Settings, get_settings
 from ..database import DatabaseDocumentStore
 from ..embeddings import EmbeddingProviderError, OpenRouterEmbeddingProvider
 from ..indexing import EmbeddingIndexingService
-from ..ingestion import IngestionError, ingest_document_set
+from ..ingestion import IngestionError, discover_files, ingest_document_set
 
 router = APIRouter(prefix="/api/v1/document-sets", tags=["document-ingestion"])
 
@@ -87,6 +87,34 @@ def create_document_set(
     except IngestionError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return _document_set_response(store.create_document_set(request.name, normalized_path))
+
+
+@router.post("/discover", response_model=list[DocumentSetResponse])
+def discover_document_sets(
+    settings: Annotated[Settings, Depends(get_settings)],
+    store: Annotated[DatabaseDocumentStore, Depends(get_store)],
+) -> list[DocumentSetResponse]:
+    try:
+        corpus_root = resolve_document_root(settings.repository_root, settings.document_root)
+    except IngestionError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    paths = [settings.document_root]
+    for child in sorted(corpus_root.iterdir(), key=lambda item: item.name.lower()):
+        if child.is_dir() and discover_files(child):
+            paths.append(f"{settings.document_root}/{child.name}")
+
+    existing = {str(row["root_path"]): row for row in store.list_document_sets()}
+    for path in paths:
+        if path not in existing:
+            name = (
+                "All documents"
+                if path == settings.document_root
+                else Path(path).name.replace("-", " ").replace("_", " ").title()
+            )
+            existing[path] = store.create_document_set(name, path)
+    discovered = [_document_set_response(existing[path]) for path in paths]
+    custom = [_document_set_response(row) for path, row in existing.items() if path not in paths]
+    return [*discovered, *custom]
 
 
 @router.get("", response_model=list[DocumentSetResponse])

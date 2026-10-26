@@ -14,6 +14,7 @@ import {
   apiBaseUrl,
   askGroundedQuestion,
   createDocumentSet,
+  discoverDocumentSets,
   fetchHealth,
   indexDocumentSet,
   ingestDocumentSet,
@@ -54,6 +55,14 @@ describe("api", () => {
     await expect(fetchHealth(fetcher)).rejects.toEqual(
       new ApiError("The API health check failed.", 503),
     );
+  });
+
+  it("discovers document sets", async () => {
+    openApiClient.POST.mockResolvedValue({
+      data: [{ id: "all", name: "All documents", root_path: "documents", status: "ready" }],
+    });
+
+    await expect(discoverDocumentSets()).resolves.toHaveLength(1);
   });
 
   it("creates a document set", async () => {
@@ -100,6 +109,9 @@ describe("api", () => {
 
     await expect(listDocumentSets()).rejects.toEqual(
       new ApiError("Could not load document sets.", 500),
+    );
+    await expect(discoverDocumentSets()).rejects.toEqual(
+      new ApiError("Could not discover document sets.", 500),
     );
     await expect(createDocumentSet("All documents", ".")).rejects.toEqual(
       new ApiError("Could not create document set.", 500),

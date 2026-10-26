@@ -18,19 +18,21 @@ from grounded_knowledge_api.routes.ingestion import get_store, resolve_document_
 class FakeStore:
     def __init__(self, document_set=None):
         self.document_set = document_set
+        self.document_sets = [document_set] if document_set else []
         self.created = []
 
     def create_document_set(self, name, root_path):
         row = {"id": uuid4(), "name": name, "root_path": root_path, "status": "registered"}
         self.created.append(row)
         self.document_set = row
+        self.document_sets.append(row)
         return row
 
     def list_document_sets(self):
-        return [self.document_set] if self.document_set else []
+        return self.document_sets
 
     def get_document_set(self, document_set_id):
-        return self.document_set
+        return next((row for row in self.document_sets if row["id"] == document_set_id), None)
 
 
 def client_for(tmp_path, store):
@@ -55,6 +57,48 @@ def test_resolve_document_root_rejects_escape_and_invalid_paths(tmp_path):
     file_path.write_text("file", encoding="utf-8")
     with pytest.raises(IngestionError, match="not a directory"):
         resolve_document_root(str(tmp_path), "file.txt")
+
+
+def test_discover_document_sets_is_idempotent_and_preserves_custom(tmp_path):
+    documents = tmp_path / "documents"
+    (documents / "policies").mkdir(parents=True)
+    (documents / "procedures").mkdir()
+    (documents / "policies" / "refunds.md").write_text("# Refunds\n\nRule", encoding="utf-8")
+    custom = {"id": uuid4(), "name": "Custom", "root_path": "custom", "status": "registered"}
+    store = FakeStore(custom)
+    settings = Settings(
+        repository_root=str(tmp_path), document_root="documents", api_cors_origins=[]
+    )
+    app = create_app(settings)
+    app.dependency_overrides[get_settings] = lambda: settings
+    app.dependency_overrides[get_store] = lambda: store
+
+    with TestClient(app) as client:
+        first = client.post("/api/v1/document-sets/discover")
+        second = client.post("/api/v1/document-sets/discover")
+
+    assert first.status_code == 200
+    assert [item["root_path"] for item in first.json()] == [
+        "documents",
+        "documents/policies",
+        "custom",
+    ]
+    assert len(store.created) == 2
+    assert second.json() == first.json()
+
+
+def test_discover_document_sets_rejects_missing_corpus(tmp_path):
+    settings = Settings(
+        repository_root=str(tmp_path), document_root="documents", api_cors_origins=[]
+    )
+    app = create_app(settings)
+    app.dependency_overrides[get_settings] = lambda: settings
+    app.dependency_overrides[get_store] = lambda: FakeStore()
+
+    with TestClient(app) as client:
+        response = client.post("/api/v1/document-sets/discover")
+
+    assert response.status_code == 400
 
 
 def test_create_and_list_document_sets(tmp_path):

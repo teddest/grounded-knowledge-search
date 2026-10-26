@@ -70,6 +70,31 @@
         }
       }
     },
+    "/api/v1/document-sets/discover": {
+      "post": {
+        "tags": [
+          "document-ingestion"
+        ],
+        "summary": "Discover Document Sets",
+        "operationId": "discover_document_sets_api_v1_document_sets_discover_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentSetResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Discover Document Sets Api V1 Document Sets Discover Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/document-sets/{document_set_id}/ingest": {
       "post": {
         "tags": [

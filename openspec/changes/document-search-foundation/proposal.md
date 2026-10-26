@@ -20,6 +20,7 @@ The repository should be understandable and runnable by someone starting with no
 - Add a Next.js and TypeScript web interface styled with Tailwind CSS for interactive search and cited answers.
 - Add an educational About page explaining the application purpose, architecture, data flow, technology choices, evaluation workflow, limitations, and data-handling considerations.
 - Add interactive source-reference dialogs that show cited evidence with document metadata and line-numbered content.
+- Discover and register document sets under the corpus directory automatically, while preserving a user option to register a custom document path.
 - Add language-appropriate testing, linting, type-checking, integration testing, and coverage gates targeting near-complete coverage of first-party application logic.
 - Use pnpm for the Node.js workspace and a locked Python dependency workflow, with supply-chain safeguards for dependency installation, updates, and build scripts.
 
@@ -29,6 +30,7 @@ The repository should be understandable and runnable by someone starting with no
 
 - `document-corpus`: Provides a reproducible, metadata-rich set of educational documents and representative search questions.
 - `document-ingestion`: Parses supported documents into searchable sections while preserving titles, headings, versions, dates, and source locations.
+- `document-set-discovery`: Discovers corpus subdirectories, registers them safely, and provides a user-facing custom document-set registration flow.
 - `hybrid-retrieval`: Searches document sections using semantic similarity, lexical matching, exact terms, and metadata filters, then returns ranked evidence.
 - `grounded-answers`: Generates answers from retrieved document evidence and presents source citations and uncertainty.
 - `retrieval-evaluation`: Runs labeled queries and reports ranking, retrieval, and citation-quality measures.

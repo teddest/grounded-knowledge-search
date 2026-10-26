@@ -58,9 +58,17 @@ Run the complete local verification workflow with one command:
 
 This validates locked dependencies, generated API contracts, Python tests and coverage, frontend tests and coverage, type checking, linting, production build, Playwright smoke tests, and Node/Python dependency audits. GitHub Actions runs the same workflow for changes targeting `main`.
 
-## Ingest a document set
+## Discover and register document sets
 
-Register a directory relative to the configured repository root:
+The application discovers `documents/` and supported child directories automatically:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/document-sets/discover
+```
+
+The web interface runs discovery when it loads and selects **All documents** by default. Existing custom registrations are preserved.
+
+To register a custom directory manually, use a repository-relative path:
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/document-sets \
@@ -68,7 +76,9 @@ curl -X POST http://localhost:8000/api/v1/document-sets \
   -d '{"name":"policies","path":"documents/policies"}'
 ```
 
-Use the returned `id` to ingest the Markdown and text documents:
+## Ingest a document set
+
+Use the returned `id` from discovery or custom registration to ingest the Markdown and text documents:
 
 ```bash
 curl -X POST \

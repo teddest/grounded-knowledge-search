@@ -9,11 +9,11 @@ import {
   ApiError,
   askGroundedQuestion,
   createDocumentSet,
+  discoverDocumentSets,
   DocumentSet,
   GroundedAnswer,
   indexDocumentSet,
   ingestDocumentSet,
-  listDocumentSets,
   SearchFilters,
   SearchResult,
   searchDocuments,
@@ -30,7 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-type BusyState = "loading" | "indexing" | "searching" | "answering" | null;
+type BusyState = "loading" | "registering" | "indexing" | "searching" | "answering" | null;
 type NoticeKind = "success" | "info";
 type FilterState = { category: string; status: string; version: string };
 
@@ -45,6 +45,8 @@ export function KnowledgeSearchApp(): React.JSX.Element {
   const [selectedId, setSelectedId] = useState("");
   const [query, setQuery] = useState("");
   const [question, setQuestion] = useState("");
+  const [customSetName, setCustomSetName] = useState("");
+  const [customSetPath, setCustomSetPath] = useState("");
   const [filters, setFilters] = useState<FilterState>(emptyFilters);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [answer, setAnswer] = useState<GroundedAnswer | null>(null);
@@ -60,7 +62,7 @@ export function KnowledgeSearchApp(): React.JSX.Element {
   );
 
   const loadDocumentSets = useCallback(async () => {
-    const existingDocumentSets = await listDocumentSets();
+    const existingDocumentSets = await discoverDocumentSets();
     const allDocuments = existingDocumentSets.find(
       (documentSet) => documentSet.root_path === "documents",
     );
@@ -85,6 +87,33 @@ export function KnowledgeSearchApp(): React.JSX.Element {
       status: filters.status || null,
       version: filters.version || null,
     };
+  }
+
+  async function handleRegisterDocumentSet(event: FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    if (!customSetPath.trim()) {
+      setError("Enter a repository-relative document path.");
+      return;
+    }
+    setBusy("registering");
+    setError("");
+    setNotice("");
+    try {
+      const created = await createDocumentSet(
+        customSetName.trim() || customSetPath.trim(),
+        customSetPath.trim(),
+      );
+      await loadDocumentSets();
+      setSelectedId(created.id);
+      setCustomSetName("");
+      setCustomSetPath("");
+      setNotice("Document set registered.");
+      setNoticeKind("success");
+    } catch (registrationError: unknown) {
+      setError(errorMessage(registrationError, "Could not register document set."));
+    } finally {
+      setBusy(null);
+    }
   }
 
   async function handleIndexing(): Promise<void> {
@@ -206,6 +235,25 @@ export function KnowledgeSearchApp(): React.JSX.Element {
                 {selectedDocumentSet.root_path} · {selectedDocumentSet.status}
               </p>
             )}
+            <form className="mt-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto]" onSubmit={handleRegisterDocumentSet}>
+              <Input
+                aria-label="Document set name"
+                placeholder="Custom set name"
+                value={customSetName}
+                onChange={(event) => setCustomSetName(event.target.value)}
+                disabled={busy !== null}
+              />
+              <Input
+                aria-label="Document set path"
+                placeholder="documents/policies"
+                value={customSetPath}
+                onChange={(event) => setCustomSetPath(event.target.value)}
+                disabled={busy !== null}
+              />
+              <Button variant="outline" type="submit" disabled={busy !== null}>
+                {busy === "registering" ? "Registering…" : "Register folder"}
+              </Button>
+            </form>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button type="button" onClick={handleIndexing} disabled={busy !== null}>

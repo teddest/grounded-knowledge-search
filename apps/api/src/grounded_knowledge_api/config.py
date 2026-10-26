@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     app_name: str = "Grounded Knowledge Search API"
     database_url: str = "postgresql://search:search@localhost:5432/search"
     repository_root: str = "./documents"
+    document_root: str = "documents"
     openrouter_api_key: str = ""
     openrouter_embedding_model: str = "openai/text-embedding-3-small"
     openrouter_chat_model: str = "openai/gpt-4o-mini"
