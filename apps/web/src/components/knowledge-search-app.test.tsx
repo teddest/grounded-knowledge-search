@@ -108,6 +108,7 @@ describe("KnowledgeSearchApp", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Analyze and index this document set before asking questions.");
     await user.click(screen.getByRole("button", { name: "Analyze and index" }));
     expect(api.ingestDocumentSet).toHaveBeenCalledWith("all-set");
+    expect(api.ingestDocumentSet).toHaveBeenCalledWith("policies");
   });
 
   it("registers a custom document set", async () => {
@@ -142,6 +143,24 @@ describe("KnowledgeSearchApp", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Path does not exist");
   });
 
+  it("indexes only the selected custom document set", async () => {
+    const user = userEvent.setup();
+    const policies = { ...documentSet, id: "policies", name: "Policies", root_path: "documents/policies" };
+    api.discoverDocumentSets.mockResolvedValue([documentSet, policies]);
+    api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
+    api.ingestDocumentSet.mockResolvedValue(undefined);
+    api.indexDocumentSet.mockResolvedValue(undefined);
+    render(<KnowledgeSearchApp />);
+
+    await waitFor(() => expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeVisible());
+    await user.click(screen.getByRole("combobox", { name: "Indexed documents" }));
+    await user.click(screen.getAllByRole("option", { name: /Policies/ })[1]);
+    await user.click(screen.getByRole("button", { name: "Analyze and index" }));
+
+    await waitFor(() => expect(screen.getByText(/Documents analyzed and embeddings indexed/)).toBeVisible());
+    expect(api.ingestDocumentSet).toHaveBeenCalledWith("policies");
+  });
+
   it("shows loading and unknown-load-error states", async () => {
     let resolve: (value: typeof documentSet[]) => void = () => undefined;
     api.discoverDocumentSets.mockReturnValue(new Promise((value) => (resolve = value)));
@@ -165,9 +184,9 @@ describe("KnowledgeSearchApp", () => {
 
     await user.click(screen.getByRole("button", { name: "Analyze and index" }));
 
-    await waitFor(() => expect(screen.getByText(/Documents analyzed/)).toBeVisible());
+    await waitFor(() => expect(screen.getByText(/analyzed and embeddings indexed/)).toBeVisible());
     await user.click(screen.getByRole("button", { name: "Dismiss notification" }));
-    expect(screen.queryByText(/Documents analyzed/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/analyzed and embeddings indexed/)).not.toBeInTheDocument();
     expect(api.ingestDocumentSet).toHaveBeenCalledWith("set-1");
     expect(api.indexDocumentSet).toHaveBeenCalledWith("set-1");
   });

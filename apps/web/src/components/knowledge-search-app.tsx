@@ -125,10 +125,19 @@ export function KnowledgeSearchApp(): React.JSX.Element {
     setError("");
     setNotice("");
     try {
-      await ingestDocumentSet(selectedId);
-      await indexDocumentSet(selectedId);
+      const selectedSet = documentSets.find((documentSet) => documentSet.id === selectedId);
+      const targets =
+        selectedSet?.root_path === "documents" ? documentSets : documentSets.filter((documentSet) => documentSet.id === selectedId);
+      for (const target of targets) {
+        await ingestDocumentSet(target.id);
+        await indexDocumentSet(target.id);
+      }
       await loadDocumentSets();
-      setNotice("Documents analyzed and embeddings indexed.");
+      setNotice(
+        selectedSet?.root_path === "documents"
+          ? "All document sets analyzed and embeddings indexed."
+          : "Documents analyzed and embeddings indexed.",
+      );
       setNoticeKind("success");
     } catch (indexError: unknown) {
       setError(errorMessage(indexError, "Document indexing failed."));
