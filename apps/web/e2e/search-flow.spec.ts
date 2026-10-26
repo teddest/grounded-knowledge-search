@@ -4,7 +4,7 @@ test("searches evidence and asks a cited question", async ({ page }) => {
   await page.route("**/health", async (route) =>
     route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ status: "ok", database: "ok" }) }),
   );
-  await page.route("**/api/v1/document-sets", async (route) => {
+  await page.route("**/api/v1/document-sets*", async (route) => {
     if (route.request().method() === "POST") {
       await route.fulfill({
         status: 201,
