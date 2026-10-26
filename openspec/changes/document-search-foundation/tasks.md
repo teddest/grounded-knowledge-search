@@ -82,7 +82,8 @@
 - [x] 7.7 Add component and interaction tests for success, loading, empty, error, and citation states.
 - [x] 7.8 Add the Playwright smoke flow for loading the app, searching, and inspecting a source using a deterministic backend fixture.
 - [x] 7.9 Verify the interface against the primary corpus questions without adding application-specific dataset naming.
-- [ ] 7.10 Add a discoverable About page explaining the application purpose, architecture, data flow, stack, evaluation, limitations, and data handling.
+- [x] 7.10 Add a discoverable About page explaining the application purpose, architecture, data flow, stack, evaluation, limitations, and data handling.
+- [ ] 7.11 Add source-reference dialogs for ranked evidence and grounded-answer citations, including line-numbered content and keyboard-accessible close behavior.
 
 ## 8. Quality gates and contract verification — `test/quality-gates` (PR 8)
 

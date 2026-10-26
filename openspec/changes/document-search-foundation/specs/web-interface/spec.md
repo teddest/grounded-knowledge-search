@@ -42,6 +42,17 @@ The application SHALL provide a discoverable About page that explains the system
 - **WHEN** the reader navigates to the About page
 - **THEN** the page presents the major system concepts in accessible, readable sections without requiring a configured model key
 
+### Requirement: The web interface SHALL provide source-reference dialogs
+The interface SHALL allow users to open a retrieved source from an answer citation or result source action and SHALL show the source title, path, heading context, status/version metadata, line range, and line-numbered section content.
+
+#### Scenario: A user opens an answer source
+- **WHEN** the user activates a source citation or source reference
+- **THEN** an accessible dialog opens with the corresponding evidence and its original line references
+
+#### Scenario: A user closes a source dialog
+- **WHEN** the user presses Escape, activates the close control, or completes the dialog interaction
+- **THEN** the dialog closes without losing the current search or answer state
+
 ### Requirement: The frontend SHALL keep application logic separated from presentation
 The web application SHALL use typed API-client functions, reusable presentational components, and explicit client/server boundaries. Retrieval, ranking, embedding, and answer-generation logic SHALL remain in the Python API.
 
