@@ -77,7 +77,7 @@ test("searches evidence and asks a cited question", async ({ page }) => {
   await expect(page.getByText("API and database are ready.")).toBeVisible();
   await page.getByLabel("Search query").fill("What is the refund window?");
   await page.getByRole("button", { name: "Search" }).click();
-  await expect(page.getByText("Annual subscriptions have a 30-day refund window.")).toBeVisible();
+  await expect(page.getByText(/Annual subscriptions have a 30-day refund window/)).toBeVisible();
 
   await page.getByRole("tab", { name: "Ask a grounded question" }).click();
   await page.getByRole("textbox", { name: "Question" }).fill("What is the refund rule?");
