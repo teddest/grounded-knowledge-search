@@ -19,21 +19,16 @@ const source: SearchResult = {
 };
 
 describe("SourceReferenceDialog", () => {
-  it("shows formatted content and line-numbered source content", async () => {
-    const user = userEvent.setup();
+  it("shows formatted content with a line-number gutter", () => {
     render(<SourceReferenceDialog source={source} open onOpenChange={vi.fn()} />);
 
     expect(screen.getByRole("dialog")).toBeVisible();
     expect(screen.getByRole("heading", { name: "Refund Policy" })).toBeVisible();
     expect(screen.getByText("refunds-2025.md:13-15")).toBeVisible();
-    expect(screen.getByRole("tab", { name: "Source lines" })).toHaveAttribute("aria-selected", "true");
-    await user.click(screen.getByRole("tab", { name: "Formatted" }));
     expect(screen.getByRole("dialog")).toHaveTextContent("Annual subscriptions");
     expect(screen.getByText("Annual plans")).toBeVisible();
-
-    await user.click(screen.getByRole("tab", { name: "Source lines" }));
     expect(screen.getByText("13")).toBeVisible();
-    expect(screen.getByText("Annual subscriptions have a **30-day** refund window.")).toBeVisible();
+    expect(screen.getByText("14")).toBeVisible();
   });
 
   it("renders fallback metadata and unknown line numbers", () => {

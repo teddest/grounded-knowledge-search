@@ -8,7 +8,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { SearchResult } from "@/lib/api";
 
 type SourceReferenceDialogProps = {
@@ -44,29 +43,20 @@ export function SourceReferenceDialog({
                 </Badge>
               ))}
             </div>
-            <Tabs defaultValue="source">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="formatted">Formatted</TabsTrigger>
-                <TabsTrigger value="source">Source lines</TabsTrigger>
-              </TabsList>
-              <TabsContent value="formatted" className="mt-4 max-h-[60vh] overflow-auto rounded-lg border border-slate-200 bg-white p-5">
-                <Streamdown mode="static" className="text-slate-800">
+            <div className="mt-4 flex max-h-[60vh] overflow-auto rounded-lg border border-slate-200 bg-slate-950 text-sm text-slate-100">
+              <div aria-hidden="true" className="shrink-0 border-r border-slate-800 px-3 py-4 text-right font-mono text-slate-500">
+                {lines.map((_, index) => (
+                  <div key={`${source.id}-line-${index}`} className="leading-6">
+                    {source.start_line == null ? "?" : source.start_line + index}
+                  </div>
+                ))}
+              </div>
+              <div className="min-w-0 p-4 [&_a]:text-sky-300 [&_code]:text-sky-200 [&_pre]:bg-slate-900 [&_strong]:text-white">
+                <Streamdown mode="static" className="text-slate-100">
                   {source.content}
                 </Streamdown>
-              </TabsContent>
-              <TabsContent value="source" className="mt-4 max-h-[60vh] overflow-auto rounded-lg border border-slate-200 bg-slate-950 text-sm text-slate-100">
-                <pre className="min-w-full p-4">
-                  {lines.map((line, index) => (
-                    <div className="flex" key={`${source.id}-${index}`}>
-                      <span className="mr-4 inline-block w-10 shrink-0 select-none text-right text-slate-500">
-                        {source.start_line == null ? "?" : source.start_line + index}
-                      </span>
-                      <span className="whitespace-pre-wrap break-words">{line || " "}</span>
-                    </div>
-                  ))}
-                </pre>
-              </TabsContent>
-            </Tabs>
+              </div>
+            </div>
           </>
         )}
       </DialogContent>
