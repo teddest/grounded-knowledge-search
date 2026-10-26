@@ -18,6 +18,8 @@ The repository should be understandable and runnable by someone starting with no
 - Add hot reload for the Next.js/Tailwind web interface during local development.
 - Add educational documentation explaining the ingestion, retrieval, answer-generation, and evaluation flow.
 - Add a Next.js and TypeScript web interface styled with Tailwind CSS for interactive search and cited answers.
+- Add an educational About page explaining the application purpose, architecture, data flow, technology choices, evaluation workflow, limitations, and data-handling considerations.
+- Add interactive source-reference dialogs that show cited evidence with document metadata and line-numbered content.
 - Add language-appropriate testing, linting, type-checking, integration testing, and coverage gates targeting near-complete coverage of first-party application logic.
 - Use pnpm for the Node.js workspace and a locked Python dependency workflow, with supply-chain safeguards for dependency installation, updates, and build scripts.
 
@@ -31,7 +33,7 @@ The repository should be understandable and runnable by someone starting with no
 - `grounded-answers`: Generates answers from retrieved document evidence and presents source citations and uncertainty.
 - `retrieval-evaluation`: Runs labeled queries and reports ranking, retrieval, and citation-quality measures.
 - `local-development`: Provides a reproducible local setup and documentation for running the system with Docker and OpenRouter configuration.
-- `web-interface`: Provides the Next.js/Tailwind user interface for ingestion status, search, filters, results, and cited answers.
+- `web-interface`: Provides the Next.js/Tailwind user interface for ingestion status, search, filters, results, cited answers, source-reference dialogs, and educational application details.
 - `quality-engineering`: Provides testing conventions, dependency seams, coverage reporting, and automated quality gates across the Python API and TypeScript web application.
 - `supply-chain-security`: Provides locked and auditable Python/Node dependencies, reviewed package-manager scripts, vulnerability checks, and safe update practices.
 
@@ -41,7 +43,7 @@ The repository should be understandable and runnable by someone starting with no
 
 ## Impact
 
-- Adds the initial Python API, Next.js web application, persistence, and user-facing documentation for the repository.
+- Adds the initial Python API, Next.js web application, persistence, and user-facing documentation for the repository, including an educational About page.
 - Adds PostgreSQL with the pgvector extension as the local retrieval store.
 - Adds a TypeScript/Tailwind frontend toolchain and a Python/TypeScript automated testing toolchain.
 - Adds pnpm workspace configuration, locked Python dependencies, package-manager policy, and dependency security checks.

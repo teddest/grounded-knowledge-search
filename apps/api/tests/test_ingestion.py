@@ -112,6 +112,7 @@ def test_discovery_is_sorted_and_skips_unsupported_and_generated_directories() -
     write_file(root, "a.txt", "a")
     write_file(root, "ignored.json", "{}")
     write_file(root, "node_modules/package.md", "ignored")
+    write_file(root, "openspec/proposal.md", "ignored")
 
     assert [path.name for path in discover_files(root)] == ["a.txt", "z.md"]
     assert len(load_documents(root)) == 2

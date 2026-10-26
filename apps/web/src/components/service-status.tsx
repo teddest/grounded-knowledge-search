@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { fetchHealth } from "@/lib/api";
 
 type Status =
@@ -31,20 +33,21 @@ export function ServiceStatus(): React.JSX.Element {
   }, []);
 
   if (status.state === "checking") {
-    return <p role="status">Checking API and database status…</p>;
+    return <Badge variant="secondary" role="status">Checking API and database status…</Badge>;
   }
 
   if (status.state === "unavailable") {
-    return (
-      <p role="alert" className="text-red-700">
-        {status.message}
-      </p>
-    );
+    return <Badge variant="destructive" role="alert">{status.message}</Badge>;
   }
 
   return (
-    <p role="status" className="text-emerald-700">
+    <Badge
+      variant="outline"
+      role="status"
+      className="h-9 border-emerald-200 bg-emerald-50 px-3 text-sm font-semibold text-emerald-800 shadow-sm"
+    >
+      <CheckCircle2 />
       API and database are ready.
-    </p>
+    </Badge>
   );
 }
