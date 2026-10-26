@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("streamdown", () => ({
@@ -24,8 +25,9 @@ const baseResult: SearchResult = {
 };
 
 describe("ResultCard", () => {
-  it("renders source metadata and retrieval diagnostics", () => {
-    render(<ResultCard result={baseResult} rank={1} />);
+  it("renders source metadata and retrieval diagnostics", async () => {
+    const onOpenSource = vi.fn();
+    render(<ResultCard result={baseResult} rank={1} onOpenSource={onOpenSource} />);
 
     expect(screen.getByRole("heading", { name: /Refund Policy/ })).toBeVisible();
     expect(screen.getByText("policies/refunds.md:10-20")).toBeVisible();
@@ -33,6 +35,8 @@ describe("ResultCard", () => {
     expect(screen.getByText("0.0300")).toBeVisible();
     expect(screen.getByText("0.9000")).toBeVisible();
     expect(screen.getByText("1.2000")).toBeVisible();
+    await userEvent.setup().click(screen.getByRole("button", { name: /Open source/ }));
+    expect(onOpenSource).toHaveBeenCalledWith(baseResult);
   });
 
   it("renders safe fallbacks when optional metadata is absent", () => {

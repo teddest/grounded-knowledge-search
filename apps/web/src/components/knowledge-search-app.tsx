@@ -22,6 +22,7 @@ import {
 import { DocumentSetSelect } from "@/components/document-set-select";
 import { ResultCard } from "@/components/result-card";
 import { ServiceStatus } from "@/components/service-status";
+import { SourceReferenceDialog } from "@/components/source-reference-dialog";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -47,6 +48,7 @@ export function KnowledgeSearchApp(): React.JSX.Element {
   const [filters, setFilters] = useState<FilterState>(emptyFilters);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [answer, setAnswer] = useState<GroundedAnswer | null>(null);
+  const [selectedSource, setSelectedSource] = useState<SearchResult | null>(null);
   const [busy, setBusy] = useState<BusyState>("loading");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -283,7 +285,12 @@ export function KnowledgeSearchApp(): React.JSX.Element {
                 <span className="text-sm text-muted-foreground">{results.length} results</span>
               </div>
               {results.map((result, index) => (
-                <ResultCard key={result.id} result={result} rank={index + 1} />
+                <ResultCard
+                  key={result.id}
+                  result={result}
+                  rank={index + 1}
+                  onOpenSource={setSelectedSource}
+                />
               ))}
             </section>
           ) : (
@@ -322,8 +329,14 @@ export function KnowledgeSearchApp(): React.JSX.Element {
                   <ul className="mt-2 space-y-2 text-sm text-sky-800">
                     {answer.sources.map((source, index) => (
                       <li key={source.id}>
-                        [{index + 1}] {source.source_path}:{source.start_line ?? "?"}-
-                        {source.end_line ?? "?"}
+                        <button
+                          type="button"
+                          className="text-left underline-offset-2 hover:underline"
+                          onClick={() => setSelectedSource(source)}
+                        >
+                          [{index + 1}] {source.source_path}:{source.start_line ?? "?"}-
+                          {source.end_line ?? "?"}
+                        </button>
                       </li>
                     ))}
                   </ul>
@@ -337,6 +350,12 @@ export function KnowledgeSearchApp(): React.JSX.Element {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <SourceReferenceDialog
+        source={selectedSource}
+        open={selectedSource !== null}
+        onOpenChange={() => setSelectedSource(null)}
+      />
     </main>
   );
 }

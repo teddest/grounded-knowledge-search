@@ -7,9 +7,10 @@ import type { SearchResult } from "@/lib/api";
 type ResultCardProps = {
   result: SearchResult;
   rank: number;
+  onOpenSource?: (source: SearchResult) => void;
 };
 
-export function ResultCard({ result, rank }: ResultCardProps): React.JSX.Element {
+export function ResultCard({ result, rank, onOpenSource }: ResultCardProps): React.JSX.Element {
   const location = `${result.source_path}:${result.start_line ?? "?"}-${result.end_line ?? "?"}`;
   const heading = result.heading_path?.join(" > ") || "Document";
 
@@ -21,7 +22,18 @@ export function ResultCard({ result, rank }: ResultCardProps): React.JSX.Element
             <span className="mr-2 text-sky-700">#{rank}</span>
             {result.title}
           </h3>
-          <code className="text-xs text-slate-500">{location}</code>
+          {onOpenSource ? (
+            <button
+              type="button"
+              className="text-left text-xs text-sky-700 underline-offset-2 hover:underline"
+              onClick={() => onOpenSource(result)}
+              aria-label={`Open source ${location}`}
+            >
+              <code>{location}</code>
+            </button>
+          ) : (
+            <code className="text-xs text-slate-500">{location}</code>
+          )}
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-600">
           <span>{heading}</span>

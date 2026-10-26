@@ -195,7 +195,10 @@ describe("KnowledgeSearchApp", () => {
     await user.click(screen.getByRole("button", { name: "Ask" }));
 
     await waitFor(() => expect(screen.getByText(/30-day window/)).toBeVisible());
-    expect(screen.getByText("[1] refunds-2025.md:1-4")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "[1] refunds-2025.md:1-4" }));
+    expect(screen.getByRole("dialog")).toBeVisible();
+    await user.click(screen.getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("renders source fallbacks when line ranges are missing", async () => {
