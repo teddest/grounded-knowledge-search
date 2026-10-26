@@ -96,15 +96,15 @@ def _split_long_section(
             character_count += line_size
             chunk_end += 1
 
-        content = "\n".join(lines[chunk_start:chunk_end]).strip()
-        if content:
+        raw_content = "\n".join(lines[chunk_start:chunk_end])
+        if raw_content.strip():
             chunks.append(
                 DocumentSection(
                     ordinal=0,
                     heading_path=heading_path,
                     start_line=start_line + chunk_start,
                     end_line=start_line + chunk_end - 1,
-                    content=content,
+                    content=raw_content,
                 )
             )
         chunk_start = chunk_end
