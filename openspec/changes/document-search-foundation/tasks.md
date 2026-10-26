@@ -83,7 +83,7 @@
 - [x] 7.8 Add the Playwright smoke flow for loading the app, searching, and inspecting a source using a deterministic backend fixture.
 - [x] 7.9 Verify the interface against the primary corpus questions without adding application-specific dataset naming.
 - [x] 7.10 Add a discoverable About page explaining the application purpose, architecture, data flow, stack, evaluation, limitations, and data handling.
-- [ ] 7.11 Add source-reference dialogs for ranked evidence and grounded-answer citations, including line-numbered content and keyboard-accessible close behavior.
+- [x] 7.11 Add source-reference dialogs for ranked evidence and grounded-answer citations, including formatted content, source ranges, and keyboard-accessible close behavior.
 
 ## 8. Quality gates and contract verification — `test/quality-gates` (PR 8)
 
@@ -101,12 +101,12 @@
 
 ## 9. Educational documentation — `docs/educational-guide` (PR 9)
 
-- [ ] 9.1 Document the application architecture and the flow from documents to sections, embeddings, retrieval, and answers.
-- [ ] 9.2 Document the API/web split, Next.js App Router structure, TypeScript conventions, Tailwind setup, and component boundaries.
-- [ ] 9.3 Document supported input formats, metadata conventions, chunking behavior, and known limitations.
-- [ ] 9.4 Document the difference between lexical search, semantic search, hybrid ranking, and answer generation.
-- [ ] 9.5 Document local setup, OpenRouter configuration, model compatibility, and external data-handling considerations.
-- [ ] 9.6 Document testing layers, coverage commands, thresholds, and the difference between coverage and behavior quality.
-- [ ] 9.7 Document how to add evaluation questions and interpret Hit@K, Precision@K, Recall@K, and MRR.
-- [ ] 9.8 Add a troubleshooting guide for database startup, missing credentials, embedding dimensions, frontend/API connectivity, and empty results.
-- [ ] 9.9 Run the documented clean-clone walkthrough and fix any setup gaps.
+- [x] 9.1 Document the application architecture and the flow from documents to sections, embeddings, retrieval, and answers.
+- [x] 9.2 Document the API/web split, Next.js App Router structure, TypeScript conventions, Tailwind setup, and component boundaries.
+- [x] 9.3 Document supported input formats, metadata conventions, chunking behavior, and known limitations.
+- [x] 9.4 Document the difference between lexical search, semantic search, hybrid ranking, and answer generation.
+- [x] 9.5 Document local setup, OpenRouter configuration, model compatibility, and external data-handling considerations.
+- [x] 9.6 Document testing layers, coverage commands, thresholds, and the difference between coverage and behavior quality.
+- [x] 9.7 Document how to add evaluation questions and interpret Hit@K, Precision@K, Recall@K, and MRR.
+- [x] 9.8 Add a troubleshooting guide for database startup, missing credentials, embedding dimensions, frontend/API connectivity, and empty results.
+- [x] 9.9 Run the documented clean-clone walkthrough and fix any setup gaps.

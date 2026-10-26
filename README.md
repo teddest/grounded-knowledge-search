@@ -138,6 +138,15 @@ The evaluation response reports Hit@K, Precision@K, Recall@K, MRR, returned sour
 
 **Northstar Relay** is the example dataset, stored under `documents/`. It covers billing, onboarding, product behavior, support escalation, security, and incident response. The default **All documents** set indexes this directory only; repository tooling and implementation directories are excluded.
 
+## Learning guide
+
+- [Architecture](docs/architecture.md)
+- [Retrieval pipeline](docs/retrieval.md)
+- [Evaluation](docs/evaluation.md)
+- [Development guide](docs/development.md)
+- [Troubleshooting](docs/troubleshooting.md)
+- [About page](http://localhost:3000/about) when the application is running
+
 ## Project planning
 
 The implementation is planned with [OpenSpec](https://github.com/Fission-AI/OpenSpec). The proposal, design, requirements, and PR-sized task plan are in `openspec/changes/document-search-foundation/`.
