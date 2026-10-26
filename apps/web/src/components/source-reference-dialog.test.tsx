@@ -19,15 +19,19 @@ const source: SearchResult = {
 };
 
 describe("SourceReferenceDialog", () => {
-  it("shows metadata and line-numbered source content", () => {
+  it("shows formatted content and line-numbered source content", async () => {
+    const user = userEvent.setup();
     render(<SourceReferenceDialog source={source} open onOpenChange={vi.fn()} />);
 
     expect(screen.getByRole("dialog")).toBeVisible();
     expect(screen.getByRole("heading", { name: "Refund Policy" })).toBeVisible();
     expect(screen.getByText("refunds-2025.md:13-15")).toBeVisible();
+    expect(screen.getByRole("dialog")).toHaveTextContent("Annual subscriptions");
+    expect(screen.getByText("Annual plans")).toBeVisible();
+
+    await user.click(screen.getByRole("tab", { name: "Source lines" }));
     expect(screen.getByText("13")).toBeVisible();
     expect(screen.getByText("Annual subscriptions have a **30-day** refund window.")).toBeVisible();
-    expect(screen.getByText("Annual plans")).toBeVisible();
   });
 
   it("renders fallback metadata and unknown line numbers", () => {
@@ -42,7 +46,7 @@ describe("SourceReferenceDialog", () => {
     expect(screen.getByText("refunds-2025.md:?-?")).toBeVisible();
     expect(screen.getByText("unknown status")).toBeVisible();
     expect(screen.getByText("unversioned")).toBeVisible();
-    expect(screen.getByText("?")).toBeVisible();
+    expect(screen.getByRole("dialog")).toHaveTextContent("?");
   });
 
   it("closes through the dialog close control", async () => {
