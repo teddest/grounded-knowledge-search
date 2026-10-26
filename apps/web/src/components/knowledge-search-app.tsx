@@ -137,17 +137,22 @@ export function KnowledgeSearchApp(): React.JSX.Element {
 
   return (
     <main className="mx-auto min-h-screen max-w-6xl px-6 py-10">
-      <header className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
-          Grounded Knowledge Search
-        </p>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-950">
-          Find evidence. Understand the answer.
-        </h1>
-        <p className="mt-3 max-w-3xl text-lg text-slate-600">
-          Explore document sections with hybrid retrieval, then ask questions grounded in the
-          sources returned by search.
-        </p>
+      <header className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
+            Grounded Knowledge Search
+          </p>
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-slate-950">
+            Find evidence. Understand the answer.
+          </h1>
+          <p className="mt-3 max-w-3xl text-lg text-slate-600">
+            Explore document sections with hybrid retrieval, then ask questions grounded in the
+            sources returned by search.
+          </p>
+        </div>
+        <div className="lg:mt-8">
+          <ServiceStatus />
+        </div>
       </header>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -173,9 +178,6 @@ export function KnowledgeSearchApp(): React.JSX.Element {
             )}
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <div className="rounded-lg border border-slate-200 px-4 py-2">
-              <ServiceStatus />
-            </div>
             <button
               type="button"
               className="rounded-lg bg-sky-700 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50"
@@ -197,7 +199,17 @@ export function KnowledgeSearchApp(): React.JSX.Element {
           }`}
           role={error ? "alert" : "status"}
         >
-          {error || notice}
+          <span>{error || notice}</span>
+          {notice && !error && (
+            <button
+              type="button"
+              className="ml-4 font-semibold hover:opacity-70"
+              aria-label="Dismiss notification"
+              onClick={() => setNotice("")}
+            >
+              ×
+            </button>
+          )}
         </div>
       )}
 

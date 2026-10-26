@@ -104,6 +104,8 @@ describe("KnowledgeSearchApp", () => {
     await user.click(screen.getByRole("button", { name: "Analyze and index" }));
 
     await waitFor(() => expect(screen.getByText(/Documents analyzed/)).toBeVisible());
+    await user.click(screen.getByRole("button", { name: "Dismiss notification" }));
+    expect(screen.queryByText(/Documents analyzed/)).not.toBeInTheDocument();
     expect(api.ingestDocumentSet).toHaveBeenCalledWith("set-1");
     expect(api.indexDocumentSet).toHaveBeenCalledWith("set-1");
   });
