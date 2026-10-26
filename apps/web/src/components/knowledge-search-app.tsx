@@ -172,12 +172,7 @@ export function KnowledgeSearchApp(): React.JSX.Element {
           </p>
         </div>
         <div className="flex items-center gap-3 lg:mt-8">
-          <Button
-            variant="outline"
-            size="sm"
-            className="border-sky-200 text-sky-800 shadow-sm hover:bg-sky-50"
-            asChild
-          >
+          <Button size="lg" className="shadow-sm" asChild>
             <Link href="/about">
               <Info />
               About this app
