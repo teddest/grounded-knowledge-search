@@ -143,6 +143,10 @@ export function KnowledgeSearchApp(): React.JSX.Element {
       setError("Select a document set first.");
       return;
     }
+    if (selectedDocumentSet?.status !== "ready") {
+      setError("Analyze and index this document set before searching.");
+      return;
+    }
     if (!query.trim()) {
       setError("Enter a search query.");
       return;
@@ -169,6 +173,10 @@ export function KnowledgeSearchApp(): React.JSX.Element {
     event.preventDefault();
     if (!selectedId) {
       setError("Select a document set first.");
+      return;
+    }
+    if (selectedDocumentSet?.status !== "ready") {
+      setError("Analyze and index this document set before asking questions.");
       return;
     }
     if (!question.trim()) {
@@ -232,7 +240,7 @@ export function KnowledgeSearchApp(): React.JSX.Element {
             </div>
             {selectedDocumentSet && (
               <p className="mt-3 break-words text-xs text-slate-500">
-                {selectedDocumentSet.root_path} · {selectedDocumentSet.status}
+                {selectedDocumentSet.root_path} · {selectedDocumentSet.status === "registered" ? "needs indexing" : selectedDocumentSet.status}
               </p>
             )}
             <form className="mt-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto]" onSubmit={handleRegisterDocumentSet}>

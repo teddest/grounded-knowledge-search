@@ -97,8 +97,15 @@ describe("KnowledgeSearchApp", () => {
     api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
     render(<KnowledgeSearchApp />);
 
-    await waitFor(() => expect(screen.getByText("All documents (registered)")).toBeVisible());
+    await waitFor(() => expect(screen.getByText("All documents (needs indexing)")).toBeVisible());
     expect(api.createDocumentSet).toHaveBeenCalledWith("All documents", "documents");
+    await user.type(screen.getByLabelText("Search query"), "refund");
+    await user.click(screen.getByRole("button", { name: "Search" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Analyze and index this document set before searching.");
+    await user.click(screen.getByRole("tab", { name: "Ask a grounded question" }));
+    await user.type(screen.getByLabelText("Question"), "What is the rule?");
+    await user.click(screen.getByRole("button", { name: "Ask" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Analyze and index this document set before asking questions.");
     await user.click(screen.getByRole("button", { name: "Analyze and index" }));
     expect(api.ingestDocumentSet).toHaveBeenCalledWith("all-set");
   });

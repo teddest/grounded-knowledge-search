@@ -66,7 +66,7 @@ The application discovers `documents/` and supported child directories automatic
 curl -X POST http://localhost:8000/api/v1/document-sets/discover
 ```
 
-The web interface runs discovery when it loads and selects **All documents** by default. Existing custom registrations are preserved.
+The web interface runs discovery when it loads and selects **All documents** by default. Existing custom registrations are preserved. A `registered` set has a known directory but is not searchable yet; click **Analyze and index** until its status becomes `ready`.
 
 To register a custom directory manually, use a repository-relative path:
 
