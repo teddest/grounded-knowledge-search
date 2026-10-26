@@ -48,6 +48,16 @@ pnpm --filter @grounded/web lint
 pnpm --filter @grounded/web build
 ```
 
+## Quality checks
+
+Run the complete local verification workflow with one command:
+
+```bash
+./scripts/check.sh
+```
+
+This validates locked dependencies, generated API contracts, Python tests and coverage, frontend tests and coverage, type checking, linting, production build, Playwright smoke tests, and Node/Python dependency audits. GitHub Actions runs the same workflow for changes targeting `main`.
+
 ## Ingest a document set
 
 Register a directory relative to the configured repository root:

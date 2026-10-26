@@ -87,17 +87,17 @@
 
 ## 8. Quality gates and contract verification — `test/quality-gates` (PR 8)
 
-- [ ] 8.1 Add deterministic fakes and dependency overrides for database, embedding, chat, and API-client boundaries.
-- [ ] 8.2 Add Python unit, API, integration, and error-path tests for every implemented application module.
-- [ ] 8.3 Add TypeScript unit and component tests for shared utilities and all first-party interactive components.
-- [ ] 8.4 Add API contract tests for ingestion status, search results, and grounded-answer responses.
-- [ ] 8.5 Add branch coverage reports and enforce 100% coverage for deterministic first-party Python and TypeScript logic, documenting any narrowly scoped exclusions.
-- [ ] 8.6 Run linting, formatting, type checking, builds, unit tests, integration tests, and browser tests in one repeatable verification command.
-- [ ] 8.7 Confirm that tests run without OpenRouter network access and that external calls are limited to explicitly marked integration checks.
-- [ ] 8.8 Add frozen-install checks for pnpm and the Python dependency workflow.
-- [ ] 8.9 Add package-manager audit and vulnerability checks for Node and Python dependencies.
-- [ ] 8.10 Add lockfile, registry, lifecycle-script, dependency-source, and secret-leak checks with documented exceptions.
-- [ ] 8.11 Verify the security workflow fails on a controlled vulnerable dependency fixture or equivalent deterministic test.
+- [x] 8.1 Add deterministic fakes and dependency overrides for database, embedding, chat, and API-client boundaries.
+- [x] 8.2 Add Python unit, API, integration, and error-path tests for every implemented application module.
+- [x] 8.3 Add TypeScript unit and component tests for shared utilities and all first-party interactive components.
+- [x] 8.4 Add API contract tests for ingestion status, search results, and grounded-answer responses.
+- [x] 8.5 Add branch coverage reports and enforce 100% coverage for deterministic first-party Python and TypeScript logic, documenting any narrowly scoped exclusions.
+- [x] 8.6 Run linting, formatting, type checking, builds, unit tests, integration tests, and browser tests in one repeatable verification command.
+- [x] 8.7 Confirm that tests run without OpenRouter network access and that external calls are limited to explicitly marked integration checks.
+- [x] 8.8 Add frozen-install checks for pnpm and the Python dependency workflow.
+- [x] 8.9 Add package-manager audit and vulnerability checks for Node and Python dependencies.
+- [x] 8.10 Add lockfile, registry, lifecycle-script, dependency-source, and secret-leak checks with documented exceptions.
+- [x] 8.11 Verify the security workflow fails on a controlled vulnerable dependency fixture or equivalent deterministic test.
 
 ## 9. Educational documentation — `docs/educational-guide` (PR 9)
 
