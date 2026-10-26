@@ -21,7 +21,7 @@ test("searches evidence and asks a cited question", async ({ page }) => {
       ]),
     });
   });
-  await page.route("**/api/v1/search", async (route) =>
+  await page.route("**/api/v1/search*", async (route) =>
     route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -49,7 +49,7 @@ test("searches evidence and asks a cited question", async ({ page }) => {
       }),
     }),
   );
-  await page.route("**/api/v1/ask", async (route) =>
+  await page.route("**/api/v1/ask*", async (route) =>
     route.fulfill({
       status: 200,
       contentType: "application/json",
