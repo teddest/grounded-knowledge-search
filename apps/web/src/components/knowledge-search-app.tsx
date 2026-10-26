@@ -19,6 +19,10 @@ import {
 import { DocumentSetSelect } from "@/components/document-set-select";
 import { ResultCard } from "@/components/result-card";
 import { ServiceStatus } from "@/components/service-status";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type BusyState = "loading" | "indexing" | "searching" | "answering" | null;
 type FilterState = { category: string; status: string; version: string };
@@ -155,13 +159,12 @@ export function KnowledgeSearchApp(): React.JSX.Element {
         </div>
       </header>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="font-semibold text-slate-950">Document set</h2>
+      <Card className="border-slate-200 shadow-sm">
+        <CardContent className="p-6">
+          <h2 className="font-semibold text-slate-950">Document set</h2>
         <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0 flex-1">
-            <label className="block text-sm font-medium text-slate-700" htmlFor="document-set">
-              Indexed documents
-            </label>
+            <Label htmlFor="document-set">Indexed documents</Label>
             <div className="mt-2 max-w-xl">
               <DocumentSetSelect
                 id="document-set"
@@ -178,17 +181,13 @@ export function KnowledgeSearchApp(): React.JSX.Element {
             )}
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <button
-              type="button"
-              className="rounded-lg bg-sky-700 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50"
-              onClick={handleIndexing}
-              disabled={busy !== null}
-            >
+            <Button type="button" onClick={handleIndexing} disabled={busy !== null}>
               {busy === "indexing" ? "Analyzing…" : "Analyze and index"}
-            </button>
+            </Button>
           </div>
-        </div>
-      </section>
+          </div>
+        </CardContent>
+      </Card>
 
       {(error || notice) && (
         <div
@@ -214,53 +213,48 @@ export function KnowledgeSearchApp(): React.JSX.Element {
       )}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-slate-950">Search evidence</h2>
+        <Card className="border-slate-200 shadow-sm">
+          <CardHeader>
+            <h2 className="text-xl font-semibold text-slate-950">Search evidence</h2>
+          </CardHeader>
+          <CardContent>
           <form className="mt-4 space-y-4" onSubmit={handleSearch}>
-            <label className="block text-sm font-medium text-slate-700" htmlFor="search-query">
-              Search query
-            </label>
+            <Label htmlFor="search-query">Search query</Label>
             <div className="flex gap-3">
-              <input
+              <Input
                 id="search-query"
-                className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2"
+                className="min-w-0 flex-1"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="What is the annual refund window?"
               />
-              <button
-                className="rounded-lg bg-slate-900 px-4 py-2 font-semibold text-white disabled:opacity-50"
-                disabled={busy !== null}
-                type="submit"
-              >
+              <Button variant="secondary" disabled={busy !== null} type="submit">
                 {busy === "searching" ? "Searching…" : "Search"}
-              </button>
+              </Button>
             </div>
             <FilterControls filters={filters} setFilters={setFilters} />
           </form>
-        </section>
+          </CardContent>
+        </Card>
 
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-slate-950">Ask a grounded question</h2>
+        <Card className="border-slate-200 shadow-sm">
+          <CardHeader>
+            <h2 className="text-xl font-semibold text-slate-950">Ask a grounded question</h2>
+          </CardHeader>
+          <CardContent>
           <form className="mt-4 space-y-4" onSubmit={handleAsk}>
-            <label className="block text-sm font-medium text-slate-700" htmlFor="question">
-              Question
-            </label>
+            <Label htmlFor="question">Question</Label>
             <div className="flex gap-3">
-              <input
+              <Input
                 id="question"
-                className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2"
+                className="min-w-0 flex-1"
                 value={question}
                 onChange={(event) => setQuestion(event.target.value)}
                 placeholder="What should Support do after a failed payment?"
               />
-              <button
-                className="rounded-lg bg-sky-700 px-4 py-2 font-semibold text-white disabled:opacity-50"
-                disabled={busy !== null}
-                type="submit"
-              >
+              <Button disabled={busy !== null} type="submit">
                 {busy === "answering" ? "Answering…" : "Ask"}
-              </button>
+              </Button>
             </div>
           </form>
           {answer && (
@@ -280,7 +274,8 @@ export function KnowledgeSearchApp(): React.JSX.Element {
               </ul>
             </div>
           )}
-        </section>
+          </CardContent>
+        </Card>
       </div>
 
       {results.length > 0 && (
@@ -307,10 +302,9 @@ function FilterControls({
       <legend className="text-sm font-medium text-slate-700">Filters</legend>
       <div className="mt-2 grid gap-3 sm:grid-cols-3">
         {(["category", "status", "version"] as const).map((filter) => (
-          <input
+          <Input
             key={filter}
             aria-label={filter}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
             placeholder={filter}
             value={filters[filter]}
             onChange={(event) => setFilters({ ...filters, [filter]: event.target.value })}

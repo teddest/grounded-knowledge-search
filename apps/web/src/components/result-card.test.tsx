@@ -53,7 +53,9 @@ describe("ResultCard", () => {
     );
 
     expect(screen.getByText("policies/refunds.md:?-?")).toBeVisible();
-    expect(screen.getByText(/Document · unknown status · unversioned/)).toBeVisible();
+    expect(screen.getByText("Document")).toBeVisible();
+    expect(screen.getByText("unknown status")).toBeVisible();
+    expect(screen.getByText("unversioned")).toBeVisible();
     expect(screen.queryByText(/Semantic:/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Lexical:/)).not.toBeInTheDocument();
   });
