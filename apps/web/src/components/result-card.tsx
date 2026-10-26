@@ -1,3 +1,5 @@
+import { Streamdown } from "streamdown";
+
 import type { SearchResult } from "@/lib/api";
 
 type ResultCardProps = {
@@ -21,7 +23,9 @@ export function ResultCard({ result, rank }: ResultCardProps): React.JSX.Element
       <p className="mt-2 text-sm text-slate-600">
         {heading} · {result.status ?? "unknown status"} · {result.version ?? "unversioned"}
       </p>
-      <p className="mt-4 whitespace-pre-wrap text-sm leading-6 text-slate-800">{result.content}</p>
+      <Streamdown mode="static" className="mt-4 text-sm leading-6 text-slate-800">
+        {result.content}
+      </Streamdown>
       <dl className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs text-slate-500">
         <div>
           <dt className="inline font-semibold">Fusion: </dt>

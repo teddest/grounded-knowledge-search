@@ -1,5 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("streamdown", () => ({
+  Streamdown: ({ children }: { children: string }) => <div data-testid="streamdown">{children}</div>,
+}));
 
 import { ResultCard } from "@/components/result-card";
 import type { SearchResult } from "@/lib/api";
