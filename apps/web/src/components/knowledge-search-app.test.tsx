@@ -19,6 +19,10 @@ vi.mock("@/lib/api", async () => {
   return { ...actual, ...api };
 });
 
+vi.mock("streamdown", () => ({
+  Streamdown: ({ children }: { children: string }) => <div data-testid="streamdown">{children}</div>,
+}));
+
 const documentSet = {
   id: "set-1",
   name: "Policies",

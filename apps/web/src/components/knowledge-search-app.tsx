@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { Streamdown } from "streamdown";
 
 import {
   ApiError,
@@ -257,7 +258,9 @@ export function KnowledgeSearchApp(): React.JSX.Element {
             {answer && (
               <div className="mt-6 rounded-xl bg-slate-50 p-5">
                 <h3 className="font-semibold text-slate-950">Answer</h3>
-                <p className="mt-3 whitespace-pre-wrap leading-7 text-slate-800">{answer.answer}</p>
+                <Streamdown mode="static" className="mt-3 text-slate-800">
+                  {answer.answer}
+                </Streamdown>
                 <h3 className="mt-5 font-semibold text-slate-950">Sources</h3>
                 <ul className="mt-2 space-y-2 text-sm text-sky-800">
                   {answer.sources.map((source, index) => (

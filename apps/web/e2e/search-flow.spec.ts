@@ -46,7 +46,7 @@ test("searches evidence and asks a cited question", async ({ page }) => {
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        answer: "Annual subscriptions have a 30-day refund window [1].",
+        answer: "Annual subscriptions have a **30-day** refund window [1].",
         sources: [
           {
             id: 1,
@@ -73,6 +73,8 @@ test("searches evidence and asks a cited question", async ({ page }) => {
 
   await page.getByLabel("Question").fill("What is the refund rule?");
   await page.getByRole("button", { name: "Ask" }).click();
-  await expect(page.getByText(/30-day refund window \[1\]/)).toBeVisible();
+  const renderedAnswer = page.getByText(/refund window \[1\]/);
+  await expect(renderedAnswer).toBeVisible();
+  await expect(renderedAnswer).not.toContainText("**");
   await expect(page.getByText("[1] refunds-2025.md:1-4")).toBeVisible();
 });
