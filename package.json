@@ -11,7 +11,9 @@
     "lint": "pnpm --filter @grounded/web lint",
     "typecheck": "pnpm --filter @grounded/web typecheck",
     "test": "pnpm --filter @grounded/web test",
-    "test:coverage": "pnpm --filter @grounded/web test:coverage"
+    "test:coverage": "pnpm --filter @grounded/web test:coverage",
+    "check": "./scripts/check.sh",
+    "contracts:check": "./scripts/check-contracts.sh"
   },
   "devDependencies": {
     "openapi-typescript": "7.13.0"
