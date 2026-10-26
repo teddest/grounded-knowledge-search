@@ -13,6 +13,7 @@ import {
   ApiError,
   apiBaseUrl,
   askGroundedQuestion,
+  createDocumentSet,
   fetchHealth,
   indexDocumentSet,
   ingestDocumentSet,
@@ -55,6 +56,17 @@ describe("api", () => {
     );
   });
 
+  it("creates a document set", async () => {
+    openApiClient.POST.mockResolvedValue({
+      data: { id: "all", name: "All documents", root_path: ".", status: "registered" },
+    });
+
+    await expect(createDocumentSet("All documents", ".")).resolves.toMatchObject({
+      name: "All documents",
+      root_path: ".",
+    });
+  });
+
   it("calls the typed document-set and ingestion endpoints", async () => {
     openApiClient.GET.mockResolvedValue({
       data: [{ id: "set-1", name: "Policies", root_path: ".", status: "ready" }],
@@ -88,6 +100,9 @@ describe("api", () => {
 
     await expect(listDocumentSets()).rejects.toEqual(
       new ApiError("Could not load document sets.", 500),
+    );
+    await expect(createDocumentSet("All documents", ".")).rejects.toEqual(
+      new ApiError("Could not create document set.", 500),
     );
     await expect(ingestDocumentSet("set-1")).rejects.toEqual(
       new ApiError("Document ingestion failed.", 500),

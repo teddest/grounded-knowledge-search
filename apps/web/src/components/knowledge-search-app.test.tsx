@@ -1,12 +1,13 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { KnowledgeSearchApp } from "@/components/knowledge-search-app";
 import { ApiError } from "@/lib/api";
 
 const api = vi.hoisted(() => ({
   askGroundedQuestion: vi.fn(),
+  createDocumentSet: vi.fn(),
   fetchHealth: vi.fn(),
   indexDocumentSet: vi.fn(),
   ingestDocumentSet: vi.fn(),
@@ -26,7 +27,7 @@ vi.mock("streamdown", () => ({
 const documentSet = {
   id: "set-1",
   name: "Policies",
-  root_path: "policies",
+  root_path: ".",
   status: "ready",
 };
 
@@ -68,6 +69,15 @@ async function renderReady() {
 }
 
 describe("KnowledgeSearchApp", () => {
+  beforeEach(() => {
+    api.createDocumentSet.mockResolvedValue({
+      id: "all-set",
+      name: "All documents",
+      root_path: ".",
+      status: "registered",
+    });
+  });
+
   afterEach(() => {
     vi.clearAllMocks();
   });
@@ -76,8 +86,21 @@ describe("KnowledgeSearchApp", () => {
     await renderReady();
 
     expect(screen.getByText("API and database are ready.")).toBeVisible();
-    expect(screen.getByText(/policies · ready/)).toBeVisible();
+    expect(screen.getByText(/\. · ready/)).toBeVisible();
     expect(screen.getByRole("button", { name: "Analyze and index" })).toBeEnabled();
+  });
+
+  it("creates and selects an all-documents set by default", async () => {
+    const user = userEvent.setup();
+    const policies = { ...documentSet, id: "policies", name: "Policies", root_path: "policies" };
+    api.listDocumentSets.mockResolvedValue([policies]);
+    api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
+    render(<KnowledgeSearchApp />);
+
+    await waitFor(() => expect(screen.getByText("All documents (registered)")).toBeVisible());
+    expect(api.createDocumentSet).toHaveBeenCalledWith("All documents", ".");
+    await user.click(screen.getByRole("button", { name: "Analyze and index" }));
+    expect(api.ingestDocumentSet).toHaveBeenCalledWith("all-set");
   });
 
   it("shows loading and unknown-load-error states", async () => {
@@ -119,6 +142,7 @@ describe("KnowledgeSearchApp", () => {
 
     cleanup();
     api.listDocumentSets.mockResolvedValue([]);
+    api.createDocumentSet.mockRejectedValue(new Error("default set unavailable"));
     render(<KnowledgeSearchApp />);
     await waitFor(() => expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeVisible());
     await user.click(screen.getByRole("button", { name: "Analyze and index" }));
@@ -211,6 +235,7 @@ describe("KnowledgeSearchApp", () => {
 
     cleanup();
     api.listDocumentSets.mockResolvedValue([]);
+    api.createDocumentSet.mockRejectedValue(new Error("default set unavailable"));
     render(<KnowledgeSearchApp />);
     await waitFor(() => expect(screen.getByRole("combobox", { name: "Indexed documents" })).toBeVisible());
     await user.click(screen.getByRole("button", { name: "Search" }));

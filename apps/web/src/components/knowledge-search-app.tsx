@@ -6,6 +6,7 @@ import { Streamdown } from "streamdown";
 import {
   ApiError,
   askGroundedQuestion,
+  createDocumentSet,
   DocumentSet,
   GroundedAnswer,
   indexDocumentSet,
@@ -51,9 +52,13 @@ export function KnowledgeSearchApp(): React.JSX.Element {
   );
 
   const loadDocumentSets = useCallback(async () => {
-    const nextDocumentSets = await listDocumentSets();
+    const existingDocumentSets = await listDocumentSets();
+    const allDocuments = existingDocumentSets.find((documentSet) => documentSet.root_path === ".");
+    const nextDocumentSets = allDocuments
+      ? existingDocumentSets
+      : [await createDocumentSet("All documents", "."), ...existingDocumentSets];
     setDocumentSets(nextDocumentSets);
-    setSelectedId((current) => current || nextDocumentSets[0]?.id || "");
+    setSelectedId((current) => current || nextDocumentSets[0].id);
   }, []);
 
   useEffect(() => {
