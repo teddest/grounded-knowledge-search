@@ -55,7 +55,7 @@ Register a directory relative to the configured repository root:
 ```bash
 curl -X POST http://localhost:8000/api/v1/document-sets \
   -H 'Content-Type: application/json' \
-  -d '{"name":"policies","path":"policies"}'
+  -d '{"name":"policies","path":"documents/policies"}'
 ```
 
 Use the returned `id` to ingest the Markdown and text documents:
@@ -126,7 +126,7 @@ The evaluation response reports Hit@K, Precision@K, Recall@K, MRR, returned sour
 
 ## Dataset
 
-**Northstar Relay** is the example dataset. It covers billing, onboarding, product behavior, support escalation, security, and incident response.
+**Northstar Relay** is the example dataset, stored under `documents/`. It covers billing, onboarding, product behavior, support escalation, security, and incident response. The default **All documents** set indexes this directory only; repository tooling and implementation directories are excluded.
 
 ## Project planning
 

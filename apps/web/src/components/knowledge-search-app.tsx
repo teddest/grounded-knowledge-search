@@ -56,10 +56,12 @@ export function KnowledgeSearchApp(): React.JSX.Element {
 
   const loadDocumentSets = useCallback(async () => {
     const existingDocumentSets = await listDocumentSets();
-    const allDocuments = existingDocumentSets.find((documentSet) => documentSet.root_path === ".");
+    const allDocuments = existingDocumentSets.find(
+      (documentSet) => documentSet.root_path === "documents",
+    );
     const nextDocumentSets = allDocuments
       ? existingDocumentSets
-      : [await createDocumentSet("All documents", "."), ...existingDocumentSets];
+      : [await createDocumentSet("All documents", "documents"), ...existingDocumentSets];
     setDocumentSets(nextDocumentSets);
     setSelectedId((current) => current || nextDocumentSets[0].id);
   }, []);

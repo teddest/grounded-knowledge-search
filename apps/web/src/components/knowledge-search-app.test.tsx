@@ -27,7 +27,7 @@ vi.mock("streamdown", () => ({
 const documentSet = {
   id: "set-1",
   name: "Policies",
-  root_path: ".",
+  root_path: "documents",
   status: "ready",
 };
 
@@ -73,7 +73,7 @@ describe("KnowledgeSearchApp", () => {
     api.createDocumentSet.mockResolvedValue({
       id: "all-set",
       name: "All documents",
-      root_path: ".",
+      root_path: "documents",
       status: "registered",
     });
   });
@@ -86,7 +86,7 @@ describe("KnowledgeSearchApp", () => {
     await renderReady();
 
     expect(screen.getByText("API and database are ready.")).toBeVisible();
-    expect(screen.getByText(/\. · ready/)).toBeVisible();
+    expect(screen.getByText(/documents · ready/)).toBeVisible();
     expect(screen.getByRole("button", { name: "Analyze and index" })).toBeEnabled();
   });
 
@@ -98,7 +98,7 @@ describe("KnowledgeSearchApp", () => {
     render(<KnowledgeSearchApp />);
 
     await waitFor(() => expect(screen.getByText("All documents (registered)")).toBeVisible());
-    expect(api.createDocumentSet).toHaveBeenCalledWith("All documents", ".");
+    expect(api.createDocumentSet).toHaveBeenCalledWith("All documents", "documents");
     await user.click(screen.getByRole("button", { name: "Analyze and index" }));
     expect(api.ingestDocumentSet).toHaveBeenCalledWith("all-set");
   });
