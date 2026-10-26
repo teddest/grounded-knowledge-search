@@ -150,131 +150,135 @@ export function KnowledgeSearchApp(): React.JSX.Element {
         </p>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-        <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="font-semibold text-slate-950">Document set</h2>
-          <label className="mt-4 block text-sm font-medium text-slate-700" htmlFor="document-set">
-            Indexed documents
-          </label>
-          <div className="mt-2">
-            <DocumentSetSelect
-              id="document-set"
-              documentSets={documentSets}
-              selectedId={selectedId}
-              disabled={busy === "loading"}
-              onChange={setSelectedId}
-            />
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0 flex-1">
+            <h2 className="font-semibold text-slate-950">Document set</h2>
+            <label className="mt-4 block text-sm font-medium text-slate-700" htmlFor="document-set">
+              Indexed documents
+            </label>
+            <div className="mt-2 max-w-xl">
+              <DocumentSetSelect
+                id="document-set"
+                documentSets={documentSets}
+                selectedId={selectedId}
+                disabled={busy === "loading"}
+                onChange={setSelectedId}
+              />
+            </div>
+            {selectedDocumentSet && (
+              <p className="mt-3 break-words text-xs text-slate-500">
+                {selectedDocumentSet.root_path} · {selectedDocumentSet.status}
+              </p>
+            )}
           </div>
-          {selectedDocumentSet && (
-            <p className="mt-3 break-words text-xs text-slate-500">
-              {selectedDocumentSet.root_path} · {selectedDocumentSet.status}
-            </p>
-          )}
-          <button
-            type="button"
-            className="mt-5 w-full rounded-lg bg-sky-700 px-3 py-2 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50"
-            onClick={handleIndexing}
-            disabled={busy !== null}
-          >
-            {busy === "indexing" ? "Analyzing…" : "Analyze and index"}
-          </button>
-          <div className="mt-5 border-t border-slate-200 pt-4">
-            <ServiceStatus />
-          </div>
-        </aside>
-
-        <section className="space-y-6">
-          {(error || notice) && (
-            <div
-              className={`rounded-lg border px-4 py-3 text-sm ${
-                error
-                  ? "border-red-200 bg-red-50 text-red-800"
-                  : "border-emerald-200 bg-emerald-50 text-emerald-800"
-              }`}
-              role={error ? "alert" : "status"}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="rounded-lg border border-slate-200 px-4 py-2">
+              <ServiceStatus />
+            </div>
+            <button
+              type="button"
+              className="rounded-lg bg-sky-700 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={handleIndexing}
+              disabled={busy !== null}
             >
-              {error || notice}
+              {busy === "indexing" ? "Analyzing…" : "Analyze and index"}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {(error || notice) && (
+        <div
+          className={`mt-6 rounded-lg border px-4 py-3 text-sm ${
+            error
+              ? "border-red-200 bg-red-50 text-red-800"
+              : "border-emerald-200 bg-emerald-50 text-emerald-800"
+          }`}
+          role={error ? "alert" : "status"}
+        >
+          {error || notice}
+        </div>
+      )}
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-950">Search evidence</h2>
+          <form className="mt-4 space-y-4" onSubmit={handleSearch}>
+            <label className="block text-sm font-medium text-slate-700" htmlFor="search-query">
+              Search query
+            </label>
+            <div className="flex gap-3">
+              <input
+                id="search-query"
+                className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="What is the annual refund window?"
+              />
+              <button
+                className="rounded-lg bg-slate-900 px-4 py-2 font-semibold text-white disabled:opacity-50"
+                disabled={busy !== null}
+                type="submit"
+              >
+                {busy === "searching" ? "Searching…" : "Search"}
+              </button>
+            </div>
+            <FilterControls filters={filters} setFilters={setFilters} />
+          </form>
+        </section>
+
+        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-slate-950">Ask a grounded question</h2>
+          <form className="mt-4 space-y-4" onSubmit={handleAsk}>
+            <label className="block text-sm font-medium text-slate-700" htmlFor="question">
+              Question
+            </label>
+            <div className="flex gap-3">
+              <input
+                id="question"
+                className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2"
+                value={question}
+                onChange={(event) => setQuestion(event.target.value)}
+                placeholder="What should Support do after a failed payment?"
+              />
+              <button
+                className="rounded-lg bg-sky-700 px-4 py-2 font-semibold text-white disabled:opacity-50"
+                disabled={busy !== null}
+                type="submit"
+              >
+                {busy === "answering" ? "Answering…" : "Ask"}
+              </button>
+            </div>
+          </form>
+          {answer && (
+            <div className="mt-6 rounded-xl bg-slate-50 p-5">
+              <h3 className="font-semibold text-slate-950">Answer</h3>
+              <Streamdown mode="static" className="mt-3 text-slate-800">
+                {answer.answer}
+              </Streamdown>
+              <h3 className="mt-5 font-semibold text-slate-950">Sources</h3>
+              <ul className="mt-2 space-y-2 text-sm text-sky-800">
+                {answer.sources.map((source, index) => (
+                  <li key={source.id}>
+                    [{index + 1}] {source.source_path}:{source.start_line ?? "?"}-
+                    {source.end_line ?? "?"}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
-
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-950">Search evidence</h2>
-            <form className="mt-4 space-y-4" onSubmit={handleSearch}>
-              <label className="block text-sm font-medium text-slate-700" htmlFor="search-query">
-                Search query
-              </label>
-              <div className="flex gap-3">
-                <input
-                  id="search-query"
-                  className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="What is the annual refund window?"
-                />
-                <button
-                  className="rounded-lg bg-slate-900 px-4 py-2 font-semibold text-white disabled:opacity-50"
-                  disabled={busy !== null}
-                  type="submit"
-                >
-                  {busy === "searching" ? "Searching…" : "Search"}
-                </button>
-              </div>
-              <FilterControls filters={filters} setFilters={setFilters} />
-            </form>
-          </section>
-
-          {results.length > 0 && (
-            <section aria-label="Search results" className="space-y-3">
-              <h2 className="text-xl font-semibold text-slate-950">Ranked evidence</h2>
-              {results.map((result, index) => (
-                <ResultCard key={result.id} result={result} rank={index + 1} />
-              ))}
-            </section>
-          )}
-
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-slate-950">Ask a grounded question</h2>
-            <form className="mt-4 space-y-4" onSubmit={handleAsk}>
-              <label className="block text-sm font-medium text-slate-700" htmlFor="question">
-                Question
-              </label>
-              <div className="flex gap-3">
-                <input
-                  id="question"
-                  className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2"
-                  value={question}
-                  onChange={(event) => setQuestion(event.target.value)}
-                  placeholder="What should Support do after a failed payment?"
-                />
-                <button
-                  className="rounded-lg bg-sky-700 px-4 py-2 font-semibold text-white disabled:opacity-50"
-                  disabled={busy !== null}
-                  type="submit"
-                >
-                  {busy === "answering" ? "Answering…" : "Ask"}
-                </button>
-              </div>
-            </form>
-            {answer && (
-              <div className="mt-6 rounded-xl bg-slate-50 p-5">
-                <h3 className="font-semibold text-slate-950">Answer</h3>
-                <Streamdown mode="static" className="mt-3 text-slate-800">
-                  {answer.answer}
-                </Streamdown>
-                <h3 className="mt-5 font-semibold text-slate-950">Sources</h3>
-                <ul className="mt-2 space-y-2 text-sm text-sky-800">
-                  {answer.sources.map((source, index) => (
-                    <li key={source.id}>
-                      [{index + 1}] {source.source_path}:{source.start_line ?? "?"}-
-                      {source.end_line ?? "?"}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </section>
         </section>
       </div>
+
+      {results.length > 0 && (
+        <section aria-label="Search results" className="mt-6 space-y-3">
+          <h2 className="text-xl font-semibold text-slate-950">Ranked evidence</h2>
+          {results.map((result, index) => (
+            <ResultCard key={result.id} result={result} rank={index + 1} />
+          ))}
+        </section>
+      )}
     </main>
   );
 }
