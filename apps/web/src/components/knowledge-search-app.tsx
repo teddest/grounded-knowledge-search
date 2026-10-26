@@ -151,10 +151,10 @@ export function KnowledgeSearchApp(): React.JSX.Element {
       </header>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <h2 className="font-semibold text-slate-950">Document set</h2>
+        <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0 flex-1">
-            <h2 className="font-semibold text-slate-950">Document set</h2>
-            <label className="mt-4 block text-sm font-medium text-slate-700" htmlFor="document-set">
+            <label className="block text-sm font-medium text-slate-700" htmlFor="document-set">
               Indexed documents
             </label>
             <div className="mt-2 max-w-xl">
