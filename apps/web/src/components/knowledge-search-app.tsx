@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type BusyState = "loading" | "indexing" | "searching" | "answering" | null;
+type NoticeKind = "success" | "info";
 type FilterState = { category: string; status: string; version: string };
 
 const emptyFilters: FilterState = { category: "", status: "", version: "" };
@@ -49,6 +50,7 @@ export function KnowledgeSearchApp(): React.JSX.Element {
   const [busy, setBusy] = useState<BusyState>("loading");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [noticeKind, setNoticeKind] = useState<NoticeKind>("success");
 
   const selectedDocumentSet = useMemo(
     () => documentSets.find((documentSet) => documentSet.id === selectedId),
@@ -96,6 +98,7 @@ export function KnowledgeSearchApp(): React.JSX.Element {
       await indexDocumentSet(selectedId);
       await loadDocumentSets();
       setNotice("Documents analyzed and embeddings indexed.");
+      setNoticeKind("success");
     } catch (indexError: unknown) {
       setError(errorMessage(indexError, "Document indexing failed."));
     } finally {
@@ -120,7 +123,10 @@ export function KnowledgeSearchApp(): React.JSX.Element {
     try {
       const response = await searchDocuments(selectedId, query, 8, requestFilters());
       setResults(response.results);
-      if (response.results.length === 0) setNotice("No supporting sections were found.");
+      if (response.results.length === 0) {
+        setNotice("No supporting sections were found.");
+        setNoticeKind("info");
+      }
     } catch (searchError: unknown) {
       setError(errorMessage(searchError, "Search failed."));
     } finally {
@@ -212,7 +218,16 @@ export function KnowledgeSearchApp(): React.JSX.Element {
       </Card>
 
       {(error || notice) && (
-        <Alert className="mt-6" variant={error ? "destructive" : "default"}>
+        <Alert
+          className={`mt-6 ${
+            error
+              ? ""
+              : noticeKind === "success"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+                : "border-amber-200 bg-amber-50 text-amber-950"
+          }`}
+          variant={error ? "destructive" : "default"}
+        >
           <AlertDescription className="flex items-center justify-between gap-4">
             <span>{error || notice}</span>
             {notice && !error && (
@@ -221,7 +236,10 @@ export function KnowledgeSearchApp(): React.JSX.Element {
                 variant="ghost"
                 size="sm"
                 aria-label="Dismiss notification"
-                onClick={() => setNotice("")}
+                onClick={() => {
+                  setNotice("");
+                  setNoticeKind("success");
+                }}
               >
                 Dismiss
               </Button>
