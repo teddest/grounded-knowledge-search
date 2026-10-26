@@ -157,7 +157,7 @@ export function KnowledgeSearchApp(): React.JSX.Element {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-6xl px-6 py-10">
+    <main className="mx-auto min-h-screen max-w-6xl bg-gradient-to-br from-sky-50/70 via-background to-indigo-50/50 px-6 py-10">
       <header className="relative mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">
