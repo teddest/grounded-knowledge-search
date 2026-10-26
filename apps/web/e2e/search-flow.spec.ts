@@ -4,7 +4,18 @@ test("searches evidence and asks a cited question", async ({ page }) => {
   await page.route("**/health", async (route) =>
     route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ status: "ok", database: "ok" }) }),
   );
-  await page.route("**/api/v1/document-sets*", async (route) => {
+  await page.route("**/api/v1/document-sets**", async (route) => {
+    const pathname = new URL(route.request().url()).pathname;
+    if (pathname.endsWith("/discover")) {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify([
+          { id: "set-1", name: "Policies", root_path: "policies", status: "ready" },
+        ]),
+      });
+      return;
+    }
     if (route.request().method() === "POST") {
       await route.fulfill({
         status: 201,
@@ -13,13 +24,7 @@ test("searches evidence and asks a cited question", async ({ page }) => {
       });
       return;
     }
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify([
-        { id: "set-1", name: "Policies", root_path: "policies", status: "ready" },
-      ]),
-    });
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify([]) });
   });
   await page.route("**/api/v1/search*", async (route) =>
     route.fulfill({
