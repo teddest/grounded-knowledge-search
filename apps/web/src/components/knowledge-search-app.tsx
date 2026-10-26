@@ -171,7 +171,7 @@ export function KnowledgeSearchApp(): React.JSX.Element {
             sources returned by search.
           </p>
         </div>
-        <div className="flex flex-col items-end gap-3">
+        <div className="flex flex-col items-end gap-3 lg:self-center">
           <Button size="lg" className="shadow-sm" asChild>
             <Link href="/about">
               <Info />
