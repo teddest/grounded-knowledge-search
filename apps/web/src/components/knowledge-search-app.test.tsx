@@ -60,7 +60,7 @@ async function renderReady() {
   api.listDocumentSets.mockResolvedValue([documentSet]);
   api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
   render(<KnowledgeSearchApp />);
-  await waitFor(() => expect(screen.getByRole("option", { name: /Policies/ })).toBeVisible());
+  await waitFor(() => expect(screen.getByRole("button", { name: "Indexed documents" })).toBeVisible());
 }
 
 describe("KnowledgeSearchApp", () => {
@@ -81,9 +81,9 @@ describe("KnowledgeSearchApp", () => {
     api.listDocumentSets.mockReturnValue(new Promise((value) => (resolve = value)));
     api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
     render(<KnowledgeSearchApp />);
-    expect(screen.getByRole("option", { name: "Select a document set" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Indexed documents" })).toBeDisabled();
     resolve([documentSet]);
-    await waitFor(() => expect(screen.getByRole("option", { name: /Policies/ })).toBeVisible());
+    await waitFor(() => expect(screen.getByRole("button", { name: "Indexed documents" })).toBeVisible());
 
     api.listDocumentSets.mockRejectedValue("network failure");
     render(<KnowledgeSearchApp />);
@@ -114,7 +114,7 @@ describe("KnowledgeSearchApp", () => {
     cleanup();
     api.listDocumentSets.mockResolvedValue([]);
     render(<KnowledgeSearchApp />);
-    await waitFor(() => expect(screen.getByRole("option", { name: "Select a document set" })).toBeVisible());
+    await waitFor(() => expect(screen.getByRole("button", { name: "Indexed documents" })).toBeVisible());
     await user.click(screen.getByRole("button", { name: "Analyze and index" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Select a document set first.");
   });
@@ -198,14 +198,15 @@ describe("KnowledgeSearchApp", () => {
     api.listDocumentSets.mockResolvedValue([documentSet, secondSet]);
     api.fetchHealth.mockResolvedValue({ status: "ok", database: "ok" });
     render(<KnowledgeSearchApp />);
-    await waitFor(() => expect(screen.getByRole("option", { name: /Procedures/ })).toBeVisible());
-    await user.selectOptions(screen.getByLabelText("Indexed documents"), "set-2");
-    expect(screen.getByLabelText("Indexed documents")).toHaveValue("set-2");
+    await waitFor(() => expect(screen.getByRole("button", { name: "Indexed documents" })).toBeVisible());
+    await user.click(screen.getByRole("button", { name: "Indexed documents" }));
+    await user.click(screen.getByRole("option", { name: /Procedures/ }));
+    expect(screen.getByText("Procedures (ready)")).toBeVisible();
 
     cleanup();
     api.listDocumentSets.mockResolvedValue([]);
     render(<KnowledgeSearchApp />);
-    await waitFor(() => expect(screen.getByRole("option", { name: "Select a document set" })).toBeVisible());
+    await waitFor(() => expect(screen.getByRole("button", { name: "Indexed documents" })).toBeVisible());
     await user.click(screen.getByRole("button", { name: "Search" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Select a document set first.");
     await user.click(screen.getByRole("button", { name: "Ask" }));

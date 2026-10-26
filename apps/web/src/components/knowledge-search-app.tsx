@@ -15,6 +15,7 @@ import {
   searchDocuments,
 } from "@/lib/api";
 
+import { DocumentSetSelect } from "@/components/document-set-select";
 import { ResultCard } from "@/components/result-card";
 import { ServiceStatus } from "@/components/service-status";
 
@@ -154,20 +155,15 @@ export function KnowledgeSearchApp(): React.JSX.Element {
           <label className="mt-4 block text-sm font-medium text-slate-700" htmlFor="document-set">
             Indexed documents
           </label>
-          <select
-            id="document-set"
-            className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-            value={selectedId}
-            onChange={(event) => setSelectedId(event.target.value)}
-            disabled={busy === "loading"}
-          >
-            <option value="">Select a document set</option>
-            {documentSets.map((documentSet) => (
-              <option key={documentSet.id} value={documentSet.id}>
-                {documentSet.name} ({documentSet.status})
-              </option>
-            ))}
-          </select>
+          <div className="mt-2">
+            <DocumentSetSelect
+              id="document-set"
+              documentSets={documentSets}
+              selectedId={selectedId}
+              disabled={busy === "loading"}
+              onChange={setSelectedId}
+            />
+          </div>
           {selectedDocumentSet && (
             <p className="mt-3 break-words text-xs text-slate-500">
               {selectedDocumentSet.root_path} · {selectedDocumentSet.status}
