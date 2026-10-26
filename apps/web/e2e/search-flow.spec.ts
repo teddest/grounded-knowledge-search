@@ -9,7 +9,7 @@ test("searches evidence and asks a cited question", async ({ page }) => {
       await route.fulfill({
         status: 201,
         contentType: "application/json",
-        body: JSON.stringify({ id: "all-set", name: "All documents", root_path: "documents", status: "registered" }),
+        body: JSON.stringify({ id: "all-set", name: "All documents", root_path: "documents", status: "ready" }),
       });
       return;
     }
