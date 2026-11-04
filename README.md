@@ -144,6 +144,56 @@ curl -X POST http://localhost:8000/api/v1/evaluate \
 
 The evaluation response reports Hit@K, Precision@K, Recall@K, MRR, returned sources, matched sources, and per-query failure details. Retrieval quality is reported separately from generated-answer and citation quality. The checked-in baseline summary is in `evaluation-baseline.json`; it is a reproducible educational baseline, not a production quality claim.
 
+## Improving undesirable results
+
+Use the evaluation output and the displayed evidence to determine which stage needs adjustment. Change one variable at a time, rerun the evaluation, and review the generated answer and citations separately.
+
+### The relevant evidence is missing or ranked too low
+
+Adjust ingestion and retrieval when the expected source does not appear near the top of the results:
+
+- **Check ingestion and indexing first.** Confirm that the document set was ingested and that its sections have embeddings. Re-run ingestion and indexing after changing source documents, chunking, or the embedding model.
+- **Improve document metadata.** Preserve accurate `status`, `version`, `effective_date`, category, and headings. Use `filters.status` or `filters.version` for questions that refer to a current or historical policy.
+- **Adjust section size.** Sections are currently capped at 6,000 characters. Smaller, heading-aware sections can improve precision; overlap can help when a fact spans a section boundary. These changes require re-ingestion and re-indexing.
+- **Increase the candidate pool.** The default `RETRIEVAL_CANDIDATE_MULTIPLIER=3` retrieves three times the requested result limit from both lexical and vector search before fusion. Try `5` or `10` when relevant evidence is being missed:
+
+  ```dotenv
+  RETRIEVAL_CANDIDATE_MULTIPLIER=5
+  ```
+
+- **Change the embedding model when paraphrases are not matching.** Set `OPENROUTER_EMBEDDING_MODEL` to the selected model, ensure `EMBEDDING_DIMENSIONS` matches it, and re-index the document set. The same model must be used for document and query embeddings.
+- **Tune hybrid retrieval or add a reranking stage.** Lexical retrieval helps with exact terms, dates, and identifiers; vector retrieval helps with paraphrases. If one consistently outranks the other incorrectly, adjust their fusion or rerank the top candidates with a pretrained reranking model.
+
+### The relevant evidence is present but the answer is wrong
+
+Adjust answer generation when the correct source appears in the returned evidence but the response is incomplete, unsupported, or confused:
+
+- **Use a stronger chat model** by changing `OPENROUTER_CHAT_MODEL`.
+- **Strengthen the grounding instructions** in `apps/api/src/grounded_knowledge_api/answering.py`. Require the answer to address the question directly, cite every material claim, distinguish conflicting versions, and state when the evidence is insufficient.
+- **Increase the context limit** when relevant sections are being truncated:
+
+  ```dotenv
+  ANSWER_MAX_CONTEXT_CHARACTERS=32000
+  ```
+
+  More context can also add noise, so compare the answer and citation quality after changing it.
+- **Increase the answer token limit** if otherwise correct responses are being cut off:
+
+  ```dotenv
+  ANSWER_MAX_TOKENS=1600
+  ```
+
+- **Keep the answer evidence-bound.** Do not treat a plausible answer as correct unless the cited source actually supports the claim. Review citation correctness, completeness, handling of conflicts, and appropriate uncertainty separately from retrieval metrics.
+
+### Recommended troubleshooting loop
+
+1. Run the labeled evaluation and identify the failed query.
+2. Inspect whether the expected source is absent, ranked too low, or present but unused by the answer.
+3. Adjust the relevant ingestion, retrieval, metadata, context, or model setting—not all of them at once.
+4. Re-ingest and re-index when document sections or embeddings changed.
+5. Rerun the evaluation and compare per-query results, not only aggregate metrics.
+6. Human-review the answer and citations before treating an improvement as meaningful.
+
 ## Dataset
 
 **Northstar Relay** is the example dataset, stored under `documents/`. It covers billing, onboarding, product behavior, support escalation, security, and incident response. The default **All documents** set indexes this directory only; repository tooling and implementation directories are excluded.
